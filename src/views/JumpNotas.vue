@@ -4,6 +4,27 @@
       <div class="flex-1">
         <h1 class="text-xl">ConectNotas</h1>
       </div>
+      <div class="navbar bg-base-100 shadow-sm">
+        <ul class="header menu-horizontal bg-base-200 rounded-box w-90">
+          <li>
+            <a>
+              <button @click="adicionarNota" class="btn-new-note">Nova Nota</button>
+            </a>
+          </li>
+          <li>
+            <a>
+              <button @click="apagarTodasNotas" class="btn-delete-all">Apagar Tudo</button>
+            </a>
+          </li>
+          <li>
+            <a>
+              <div class="notes-actions">
+                <button @click="gerarPDF" class="btn-generate-pdf">Gerar PDF</button>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
       <div class="flex gap-2">
         <div class="search-container">
           <input v-model="busca" @input="pesquisarNotas" placeholder="Pesquisar notas..." class="search-input" />
@@ -29,29 +50,8 @@
       </div>
     </div>
 
-    <div class="navbar bg-base-100 shadow-sm">
-      <ul class="menu menu-horizontal bg-base-200 rounded-box w-screen">
-        <li>
-          <a>
-            <button @click="adicionarNota" class="btn-new-note">Nova Nota</button>
-          </a>
-        </li>
-        <li>
-          <a>
-            <button @click="apagarTodasNotas" class="btn-delete-all">Apagar Tudo</button>
-          </a>
-        </li>
-        <li>
-          <a>
-            <div class="notes-actions">
-              <button @click="gerarPDF" class="btn-generate-pdf">Gerar PDF</button>
-            </div>
-          </a>
-        </li>
-      </ul>
-    </div>
     <div class="main-content ">
-      <ul class="menu menu-xg bg-base-200 rounded-box max-w-xg padding-2 w=10px">
+      <ul class="menu menu-xg bg-base-200 rounded-box max-w-xg">
             <li>
               <details open>
                 <summary>
