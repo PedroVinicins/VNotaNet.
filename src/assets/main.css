@@ -1,112 +1,176 @@
 @plugin "daisyui";
 @import 'tailwindcss';
 
-@plugin "daisyui/theme" {
-  name: 'black';
-  default: false;
-  prefersdark: false;
-  color-scheme: 'dark';
-  --color-base-100: oklch(14% 0.004 49.25);
-  --color-base-200: oklch(21% 0.006 56.043);
-  --color-base-300: oklch(26% 0.007 34.298);
-  --color-base-content: oklch(96% 0.007 247.896);
-  --color-primary: oklch(58% 0.233 277.117);
-  --color-primary-content: oklch(96% 0.018 272.314);
-  --color-secondary: oklch(69% 0.17 162.48);
-  --color-secondary-content: oklch(97% 0.021 166.113);
-  --color-accent: oklch(72% 0.219 149.579);
-  --color-accent-content: oklch(98% 0.018 155.826);
-  --color-neutral: oklch(44% 0.011 73.639);
-  --color-neutral-content: oklch(98% 0.001 106.423);
-  --color-info: oklch(70% 0.165 254.624);
-  --color-info-content: oklch(28% 0.091 267.935);
-  --color-success: oklch(77% 0.152 181.912);
-  --color-success-content: oklch(27% 0.046 192.524);
-  --color-warning: oklch(75% 0.183 55.934);
-  --color-warning-content: oklch(26% 0.079 36.259);
-  --color-error: oklch(70% 0.191 22.216);
-  --color-error-content: oklch(25% 0.092 26.042);
-  --radius-selector: 1rem;
-  --radius-field: 0.5rem;
-  --radius-box: 0rem;
-  --size-selector: 0.25rem;
-  --size-field: 0.25rem;
-  --border: 1px;
-  --depth: 1;
-  --noise: 1;
+/* 🌈 Frecuras principais */
+:root {
+  --bg-main: oklch(21% 0.006 56.043);
+  --bg-light: oklch(25% 0.01 56.043);
+  --bg-hover: oklch(24% 0.006 56.043);
+  --bg-active: oklch(26% 0.006 56.043);
+  --text-primary: #fff;
+  --text-secondary: #aaa;
+  --text-muted: #888;
+  --scrollbar-color: bisque;
+}
+
+* {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  transition: all 0.2s ease-in-out;
+}
+
+.app-container::before  {
+    content: "💻";
+    position: absolute;
+    left: 50%;
+    top: 10%;
+    transform: translateX(-50%);
+    font-size: 30rem;
+    font-weight: 400;
+    line-height: 50rem;
+    opacity: 0.2;
+    z-index: -100;
+    transition: all 0.3s ease;
 }
 
 .navbar {
   display: flex;
-  padding: 6px 13px;
-  justify-content: space-around;
+  width: 100%;
+  padding: 10px 24px;
+  justify-content: space-between;
   align-items: center;
+  backdrop-filter: blur(10px);
+  background-color: color-mix(in oklch, var(--bg-main) 80%, transparent);
+  border-bottom: 1px solid #2c2c2e;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.main-navbar {
+  display: flex;
+  width: 100%;
+  padding: 8px 16px;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  background-color: color-mix(in oklch, var(--bg-main) 10%, transparent);
 }
 
 .main-content {
   display: flex;
-  justify-content: space-between;
   width: 100%;
-  height: 100%;
-  background-color: oklch(21% 0.006 56.043);
+  min-height: 100vh;
+ backdrop-filter: blur(100px);
+  background-color: color-mix(in oklch, var(--bg-main) 70%, transparent);
 }
 
 .header {
   display: flex;
-  padding: 15px;
-  width: 80%;
+  padding: 12px;
+  gap: 10px;
+  width: auto;
+  border-radius: 12px;
+  background-color: var(--bg-light);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .menu {
   display: flex;
-  border-right: solid 1px black;
-  background: oklch(21% 0.006 56.043);
+  flex-direction: column;
+  border-right: 1px solid #3a3a3c;
+  background: var(--bg-main);
+  padding: 16px 12px;
+  gap: 10px;
+}
+
+.note-item {
+  margin-bottom: 8px;
+  cursor: pointer;
+  transform: scale(1);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.note-item:hover {
+  transform: scale(1.02);
+  background-color: var(--bg-hover);
+}
+
+.note-item:active {
+  background-color: var(--bg-active);
 }
 
 .note-content {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding: 12px;
   width: 100%;
-  height: 100%;
-}
-
-.note-item {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
+  border-radius: 8px;
 }
 
 .note-title {
   outline: none;
   border: none;
-  word-break: keep-all1;
-  align-items: center;
   font-weight: 600;
   text-transform: uppercase;
+  font-size: 14px;
+  flex-grow: 1;
+  margin-right: 10px;
+  color: var(--text-primary);
 }
 
 .note-date {
-  display: flex;
-  margin: 12px;
-  font-weight: 600;
+  margin-left: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
 }
 
-.main-notes,
-.no-note-selected {
+.main-notes {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   width: 100%;
 }
 
+.delete-icon {
+  color: #bbb;
+  transition: color 0.2s ease-in-out;
+}
+.delete-icon:hover {
+  cursor: pointer;
+  color: red;
+}
+
+.no-note-selected {
+  display: flex;
+  width: 90vh;
+  min-width: 80vw;
+  font-size: 40px;
+  font-weight: 600;
+  color: var(--text-primary);
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
 input {
-  outline: none;
+  background: rgba(255, 255, 255, 0.05);
   border: none;
-  overflow-y: auto;
-  overflow-x: auto;
+  outline: none;
+  width: 400px;
+  padding: 10px 20px;
+  margin-right: 12px;
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 9999px;
+  box-shadow: inset 2px 5px 10px rgba(5, 5, 5, 0.25);
+  color: var(--text-primary);
+  text-align: center;
+  text-transform: uppercase;
+  transition: box-shadow 0.3s ease;
+}
+
+input:focus {
+  box-shadow: 0 0 0 2px #ffffff40;
 }
 
 textarea {
@@ -114,13 +178,15 @@ textarea {
   resize: none;
   border: none;
   overflow-y: auto;
-  overflow-x: auto;
   width: 90vh;
   min-width: 80vw;
   font-size: 18px;
   min-height: 100vh;
   height: 90%;
-  color: #ffffff;
+  padding: 24px;
+  background-color: transparent;
+  color: var(--text-primary);
+  border-radius: 16px;
 }
 
 textarea::-webkit-scrollbar {
@@ -129,17 +195,48 @@ textarea::-webkit-scrollbar {
 
 textarea::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background-color: bisque;
+  background-color: var(--scrollbar-color);
+}
+
+textarea::placeholder,
+input::placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+  opacity: 0.7;
 }
 
 .editor-title {
   outline: none;
   border: none;
-  word-break: keep-all1;
-  align-items: center;
   font-weight: 900;
   text-transform: uppercase;
   margin-top: 13px;
   width: 88%;
   font-size: 30px;
+  margin-left: 21px;
+  color: var(--text-primary);
+}
+
+/* 📱 Responsividade mobile */
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
+  }
+
+  .menu {
+    flex-direction: row;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid #3a3a3c;
+  }
+
+  textarea,
+  .no-note-selected {
+    width: 100%;
+    min-width: unset;
+  }
+
+  input {
+    width: 100%;
+  }
 }

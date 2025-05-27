@@ -12,6 +12,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@remixicon/vue": "^4.6.0",
     "@tailwindcss/vite": "^4.1.7",
     "jspdf": "^3.0.1",
     "tailwindcss": "^4.1.7",
