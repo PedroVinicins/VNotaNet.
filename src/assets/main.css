@@ -81,6 +81,75 @@
   gap: 10px;
 }
 
+
+
+.modal-box {
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: none;
+  overflow-y: auto;
+}
+
+.modal-header {
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  backdrop-filter: blur(100px);
+  background-color: color-mix(in oklch, var(--bg-main) 70%, transparent);
+
+}
+
+.input, .select, .textarea {
+  display: block;
+    outline: none;
+  resize: none;
+  border: none;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+  border: 1px solid var(--bg-hover);
+  border-radius: 8px;
+  width: 100%;
+}
+
+.input:focus, .select:focus, .textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.btn {
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background-color: #2563eb;
+}
+
+.btn-primary:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+/* Efeito de desabilitado */
+.btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Animações */
+.modal-enter-active, .modal-leave-active {
+  transition: opacity 0.3s;
+}
+.modal-enter, .modal-leave-to {
+  opacity: 0;
+}
+
+.modal-box {
+  animation: modalIn 0.3s ease-out;
+}
+
+
 .note-item {
   margin-bottom: 8px;
   cursor: pointer;
@@ -173,7 +242,7 @@ input:focus {
   box-shadow: 0 0 0 2px #ffffff40;
 }
 
-textarea {
+.editor-content {
   outline: none;
   resize: none;
   border: none;

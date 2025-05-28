@@ -7,24 +7,23 @@
       <div class="main-navbar bg-base-100 shadow-sm">
         <ul class="header menu-horizontal w-90">
           <li>
-            <a>
-              <button @click="adicionarNota" class="btn-new-note"><RiMenuAddFill /></button>
-            </a>
+            <button @click="mostrarDialog = true" class="btn-new-note">
+              <RiMenuAddFill />
+            </button>
           </li>
           <li>
-            <a>
-              <button @click="apagarTodasNotas" class="btn-delete-all"><RiDeleteBin6Fill /></button>
-            </a>
+            <button @click="apagarTodasNotas" class="btn-delete-all">
+              <RiDeleteBin6Fill />
+            </button>
           </li>
           <li>
-            <a>
-              <div class="notes-actions">
-                <button @click="gerarPDF" class="btn-generate-pdf"><RiFilePdfFill /></button>
-              </div>
-            </a>
+            <button @click="gerarPDF" class="btn-generate-pdf">
+              <RiFilePdfFill />
+            </button>
           </li>
         </ul>
       </div>
+
       <div class="flex gap-2">
         <div class="search-container">
           <input v-model="busca" @input="pesquisarNotas" placeholder="Pesquisar notas..." class="search-input" />
@@ -44,13 +43,86 @@
               </a>
             </li>
             <li><a>Configuraçoes</a></li>
-            <li><a>Sair</a></li>
+            <li><a @click="sair">Sair</a></li>
           </ul>
         </div>
       </div>
     </div>
 
-    <div class="main-content ">
+    <!-- Caixa de dialogo com o noos mano -->
+<div v-if="mostrarDialog" class="modal modal-open">
+  <div class="modal-box max-w-2xl p-0 overflow-hidden">
+    <div class="modal-header bg-gradient-to-r p-6">
+      <h3 class="font-bold text-2xl text-white">Nova Nota</h3>
+      <p class="text-blue-100">Preencha os campos para criar sua nota</p>
+    </div>
+
+    <div class="dialog-content p-6 space-y-4">
+      <div class="form-group">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Título *</label>
+        <input
+          v-model="novaNota.name"
+          placeholder="Dê um título para sua nota"
+          class="input input-bordered w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Subtítulo</label>
+        <input
+          v-model="novaNota.subtitle"
+          placeholder="Adicione um subtítulo (opcional)"
+          class="input input-bordered w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        >
+      </div>
+
+      <div class="form-group">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Prioridade</label>
+        <select
+          v-model="novaNota.priority"
+          class="select select-bordered w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        >
+          <option disabled selected>Selecione a prioridade</option>
+          <option value="baixa" class="text-green-600">Baixa</option>
+          <option value="media" class="text-yellow-600">Média</option>
+          <option value="alta" class="text-red-600">Alta</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Conteúdo</label>
+        <textarea
+          v-model="novaNota.content"
+          placeholder="Escreva o conteúdo da sua nota..."
+          class="textarea textarea-bordered w-full h-32 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        ></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer px-6 py-4 flex justify-end space-x-3">
+      <button
+        @click="cancelarNovaNota"
+        class="btn btn-ghost hover:bg-gray-200 text-gray-600"
+      >
+        Cancelar
+      </button>
+      <button
+        @click="salvarNovaNota"
+        class="btn bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all"
+        :disabled="!novaNota.name"
+        :class="{'opacity-70 cursor-not-allowed': !novaNota.name}"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+        Salvar Nota
+      </button>
+    </div>
+  </div>
+</div>
+
+    <div class="main-content">
       <ul class="menu menu-xg bg-base-200 rounded-box max-w-xg">
         <li>
           <details open>
@@ -78,16 +150,24 @@
                       <div v-for="(nota, indice) in notasFiltradas" :key="indice" @click="selecionarNota(indice)"
                         :class="{ 'note-item': true, 'active': indiceNotaAtual === indice }">
                         <div class="note-content">
-                          <h3 class="note-title" :contenteditable="nota.name.length < 43"
-                            @input="atualizarNomeNota(indice, $event)">
+                          <div class="note-title">
                             {{ nota.name }}
-                          </h3>
+                          </div> 
+                          <p class="note-subtitle">{{ nota.subtitle || 'Sem subtítulo' }}</p>
+                          <div class="note-text" v-if="nota.content">
+                            {{ nota.content.length > 100 ? nota.content.substring(0, 100) + '...' : nota.content }}
+                          </div>
                           <p class="note-date">{{ nota.date }}</p>
+                          <div v-if="nota.priority" class="priority-badge" :class="nota.priority">
+                            {{ nota.priority }}
+                          </div>
                           <div v-if="nota.name.length >= 43" class="error-message">
                             Limite de caracteres atingido!
                           </div>
                           <button class="delete-note-btn" @click.stop="apagarNota(indice)">
-                            <span class="delete-icon"><RiXrpFill size="12px"/></span>
+                            <span class="delete-icon">
+                              <RiXrpFill size="12px" />
+                            </span>
                           </button>
                         </div>
                       </div>
@@ -116,18 +196,12 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
 <script>
 import NoteEditor from '@/components/NoteEditor.vue'
-// import de Icon
-
-import { RiFilePdfFill } from "@remixicon/vue";
-import { RiDeleteBin6Fill } from "@remixicon/vue";
-import { RiMenuAddFill } from "@remixicon/vue";
-import { RiXrpFill } from "@remixicon/vue";
+import { RiFilePdfFill, RiDeleteBin6Fill, RiMenuAddFill, RiXrpFill } from "@remixicon/vue";
 
 export default {
   name: 'JumpNotas',
@@ -143,7 +217,14 @@ export default {
       notas: JSON.parse(localStorage.getItem('notasData')) || [],
       indiceNotaAtual: 0,
       busca: '',
-      notasFiltradas: []
+      notasFiltradas: [],
+      mostrarDialog: false,
+      novaNota: {
+        name: '',
+        subtitle: '',
+        priority: 'media',
+        content: ''
+      }
     }
   },
   computed: {
@@ -153,29 +234,54 @@ export default {
   },
   created() {
     this.notasFiltradas = [...this.notas]
+    // Se não houver notas, cria uma padrão
+    if (this.notas.length === 0) {
+      this.criarNotaPadrao()
+    }
   },
   methods: {
-    adicionarNota() {
-      const nome = prompt("Digite o nome da sua nova nota:", "Nova Nota")
-      if (nome === null) return
-
-      const novaNota = {
-        name: nome || "Nova Nota",
+    criarNotaPadrao() {
+      this.notas.push({
+        name: 'Bem-vindo ao NotaNet',
+        subtitle: 'Sua primeira nota',
+        priority: 'media',
         date: new Date().toLocaleDateString(),
-        content: ''
+        content: 'Comece a escrever suas notas aqui!'
+      })
+      this.salvarNotas()
+    },
+    salvarNovaNota() {
+      const notaCompleta = {
+        ...this.novaNota,
+        date: new Date().toLocaleDateString()
       }
 
-      this.notas.push(novaNota)
-      this.salvarNotas()
+      this.notas.push(notaCompleta)
       this.indiceNotaAtual = this.notas.length - 1
+      this.salvarNotas()
       this.pesquisarNotas()
+      this.mostrarDialog = false
+      this.resetarNovaNota()
+    },
+    cancelarNovaNota() {
+      this.mostrarDialog = false
+      this.resetarNovaNota()
+    },
+    resetarNovaNota() {
+      this.novaNota = {
+        name: '',
+        subtitle: '',
+        priority: 'media',
+        content: ''
+      }
     },
     apagarTodasNotas() {
-      if (confirm("Tem certeza de que deseja apagar tudo?")) {
+      if (confirm("Tem certeza de que deseja apagar todas as notas?")) {
         this.notas = []
         this.indiceNotaAtual = 0
         this.salvarNotas()
         this.pesquisarNotas()
+        this.criarNotaPadrao()
       }
     },
     apagarNota(indice) {
@@ -186,7 +292,7 @@ export default {
         }
 
         if (this.notas.length === 0) {
-          this.adicionarNota()
+          this.criarNotaPadrao()
         }
 
         this.salvarNotas()
@@ -201,7 +307,6 @@ export default {
 
       import('jspdf').then(jsPDF => {
         const doc = new jsPDF.default()
-
         doc.setFontSize(18)
         doc.text('Suas Notas', 10, 10)
 
@@ -210,7 +315,11 @@ export default {
 
         this.notas.forEach((nota, indice) => {
           doc.text(`Nota ${indice + 1}: ${nota.name}`, 10, yPos)
-          yPos += 10
+          yPos += 7
+          doc.text(`Subtítulo: ${nota.subtitle || 'Nenhum'}`, 10, yPos)
+          yPos += 7
+          doc.text(`Prioridade: ${nota.priority}`, 10, yPos)
+          yPos += 7
           doc.text(`Data: ${nota.date}`, 10, yPos)
           yPos += 10
 
@@ -218,7 +327,12 @@ export default {
           doc.text('Conteúdo:', 10, yPos)
           yPos += 7
           doc.text(linhasConteudo, 10, yPos)
-          yPos += (linhasConteudo.length * 7) + 10
+          yPos += (linhasConteudo.length * 7) + 15
+
+          if (yPos > 280) {
+            doc.addPage()
+            yPos = 20
+          }
         })
 
         doc.save('Suas_Notas.pdf')
@@ -249,17 +363,18 @@ export default {
 
       const termo = this.busca.toLowerCase()
       this.notasFiltradas = this.notas.filter(nota =>
-        nota.name.toLowerCase().includes(termo)
+        nota.name.toLowerCase().includes(termo) ||
+        (nota.subtitle && nota.subtitle.toLowerCase().includes(termo)) ||
+        (nota.content && nota.content.toLowerCase().includes(termo))
       )
 
-      if (this.notasFiltradas.length === 0) {
-        this.indiceNotaAtual = -1
-      } else {
-        this.indiceNotaAtual = 0
+      if (this.notasFiltradas.length > 0) {
+        this.indiceNotaAtual = this.notas.indexOf(this.notasFiltradas[0])
       }
     },
     salvarNotas() {
       localStorage.setItem('notasData', JSON.stringify(this.notas))
+      this.notasFiltradas = [...this.notas]
     },
     sair() {
       window.location.href = "index.html"
