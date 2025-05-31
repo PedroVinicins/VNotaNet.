@@ -24,29 +24,15 @@
         </ul>
       </div>
 
-      <div class="flex gap-2">
-        <div class="search-container">
-          <input v-model="busca" @input="pesquisarNotas" placeholder="Pesquisar notas..." class="search-input" />
-        </div>
-        <div class="dropdown dropdown-end">
-          <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-            <div class="w-10 rounded-full">
-              <img alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-            </div>
-          </div>
-          <ul tabindex="0" class="menu-img menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-            <li>
-              <a class="justify-between">
-                Seu Perfil
-                <span class="badge">New</span>
-              </a>
-            </li>
-            <li><a>Configuraçoes</a></li>
-            <li><a @click="sair">Sair</a></li>
-          </ul>
-        </div>
+      <div class="search-container">
+        <input v-model="busca" @input="pesquisarNotas" placeholder="Pesquisar notas..." class="search-input" />
       </div>
+
+      <div class="avatar avatar-online">
+        <div class="w-14 rounded-full">
+          <img src="https://img.daisyui.com/images/profile/demo/idiotsandwich@192.webp" />
+        </div>
+      </div>  
     </div>
 
     <!-- Caixa de dialogo com o noos mano -->
@@ -107,7 +93,8 @@
     </div>
 
     <div class="main-content">
-      <ul class="menu inline-flex p-5 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+      <ul
+        class="menu inline-flex p-5 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
         <li>
           <details open>
             <summary>
@@ -181,7 +168,7 @@
         </div>
       </div>
     </div>
-    </div>
+  </div>
 </template>
 
 <script>
@@ -340,31 +327,31 @@ export default {
       this.salvarNotas()
     },
     ordenarPorPrioridade(notas) {
-    const ordemPrioridade = { 'Media': 3, 'Baixa': 2, 'Alta': 1 };
-    return [...notas].sort((a, b) => {
-      return ordemPrioridade[a.priority] - ordemPrioridade[b.priority];
-    });
-  },
+      const ordemPrioridade = { 'Media': 3, 'Baixa': 2, 'Alta': 1 };
+      return [...notas].sort((a, b) => {
+        return ordemPrioridade[a.priority] - ordemPrioridade[b.priority];
+      });
+    },
 
-  pesquisarNotas() {
-    if (this.busca.trim() === '') {
-      this.notasFiltradas = this.ordenarPorPrioridade(this.notas);
-      return;
-    }
+    pesquisarNotas() {
+      if (this.busca.trim() === '') {
+        this.notasFiltradas = this.ordenarPorPrioridade(this.notas);
+        return;
+      }
 
-    const termo = this.busca.toLowerCase();
-    const notasFiltradas = this.notas.filter(nota =>
-      nota.name.toLowerCase().includes(termo) ||
-      (nota.subtitle && nota.subtitle.toLowerCase().includes(termo)) ||
-      (nota.content && nota.content.toLowerCase().includes(termo))
-    );
+      const termo = this.busca.toLowerCase();
+      const notasFiltradas = this.notas.filter(nota =>
+        nota.name.toLowerCase().includes(termo) ||
+        (nota.subtitle && nota.subtitle.toLowerCase().includes(termo)) ||
+        (nota.content && nota.content.toLowerCase().includes(termo))
+      );
 
-    this.notasFiltradas = this.ordenarPorPrioridade(notasFiltradas);
+      this.notasFiltradas = this.ordenarPorPrioridade(notasFiltradas);
 
-    if (this.notasFiltradas.length > 0) {
-      this.indiceNotaAtual = this.notas.indexOf(this.notasFiltradas[0]);
-    }
-  },
+      if (this.notasFiltradas.length > 0) {
+        this.indiceNotaAtual = this.notas.indexOf(this.notasFiltradas[0]);
+      }
+    },
     salvarNotas() {
       localStorage.setItem('notasData', JSON.stringify(this.notas))
       this.notasFiltradas = [...this.notas]
