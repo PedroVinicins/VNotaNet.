@@ -107,7 +107,7 @@
     </div>
 
     <div class="main-content">
-      <ul class="menu menu-xg bg-base-200 rounded-box max-w-xg">
+      <ul class="menu inline-flex p-5 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
         <li>
           <details open>
             <summary>
@@ -129,7 +129,7 @@
                     </svg>
                     Notas
                   </summary>
-                  <div class="sidebar">
+                  <div class="sidebar ">
                     <div class="notes-list">
                       <div v-for="(nota, indice) in notasFiltradas" :key="indice" @click="selecionarNota(indice)"
                         :class="{
@@ -181,7 +181,7 @@
         </div>
       </div>
     </div>
-  </div>
+    </div>
 </template>
 
 <script>
@@ -219,7 +219,7 @@ export default {
   },
   created() {
     this.notasFiltradas = [...this.notas]
-    // Se não houver notas, cria uma padrão < 
+    // Se não houver notas, cria uma padrão <
     if (this.notas.length === 0) {
       this.criarNotaPadrao()
     }
