@@ -32,7 +32,7 @@
         <div class="w-14 rounded-full">
           <img src="https://img.daisyui.com/images/profile/demo/idiotsandwich@192.webp" />
         </div>
-      </div>  
+      </div>
     </div>
 
     <!-- Caixa de dialogo com o noos mano -->
@@ -312,16 +312,7 @@ export default {
     selecionarNota(indice) {
       this.indiceNotaAtual = indice
     },
-    atualizarNomeNota(indice, evento) {
-      const novoNome = evento.target.innerText
-      if (novoNome.length >= 43) {
-        evento.target.innerText = novoNome.substring(0, 43)
-        this.notas[indice].name = novoNome.substring(0, 43)
-      } else {
-        this.notas[indice].name = novoNome
-      }
-      this.salvarNotas()
-    },
+  
     atualizarConteudoNota(conteudoAtualizado) {
       this.notas[this.indiceNotaAtual].content = conteudoAtualizado
       this.salvarNotas()

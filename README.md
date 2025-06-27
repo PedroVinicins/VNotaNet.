@@ -1,41 +1,53 @@
-# VNotaNEt
+# 📝 VNotaNet
 
-This template should help get you started developing with Vue 3 in Vite.
+> Sistema online de notas, com acesso fácil e uso intuitivo para todos os usuários — rápido, leve e acessível.
 
-## Recommended IDE Setup
+O **VNotaNet** é uma aplicação web simples e funcional, criada para facilitar o **registro**, **organização** e **armazenamento** de notas — sejam pessoais, acadêmicas ou profissionais.  
+Com uma interface limpa e responsiva, o sistema permite que você **adicione**, **visualize**, **edite** e **exclua** suas anotações de forma prática. Totalmente online, pode ser acessado de **qualquer lugar**, a **qualquer momento**, sem instalação necessária.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+---
 
-## Customize configuration
+## 🚧 Beta Teste Ativo
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+O projeto está em fase Beta, trazendo:
 
-## Project Setup
+- 💻 Interface moderna e fluida  
+- ♿ Acessibilidade otimizada  
+- 🌙 Modo escuro nativo  
+- ⚙️ Melhorias de desempenho  
+- ☁️ Armazenamento local com futura integração Firebase
 
-```sh
+---
+
+## ✨ Funcionalidades
+
+- ✅ **Adicionar Notas** – Crie anotações com título e descrição de forma rápida  
+- 👁️ **Visualizar e Editar** – Acesse e atualize suas notas a qualquer momento  
+- 🗑️ **Excluir Notas** – Remova notas que não são mais necessárias  
+- 📱 **Interface Responsiva** – Totalmente adaptável a mobile e desktop  
+- 🔒 **Armazenamento Seguro** – Atualmente via LocalStorage com planejamento para Firebase  
+- ☁️ **Conectividade** – Em breve, suporte a autenticação e backup com Firebase
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+O projeto utiliza as seguintes tecnologias:
+
+- 🧩 [Vue.js](https://vuejs.org/) – Framework progressivo de JavaScript  
+- 💨 [Tailwind CSS](https://tailwindcss.com/) – Utilitário CSS moderno e flexível  
+- 🎨 [DaisyUI](https://daisyui.com/) – Componentes prontos e estilizados para Tailwind  
+- 🌐 [Node.js](https://nodejs.org/) – Ambiente para execução backend  
+- 🔥 [Firebase](https://firebase.google.com/) – Autenticação, Firestore e Hosting (em desenvolvimento)
+
+---
+
+## 💻 Instalação e Execução Local
+
+Siga os passos abaixo para rodar o projeto localmente:
+
+```bash
+git clone https://github.com/PedroVinicins/VNotaNet.git
+cd VNotaNet
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
 npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-npm run test:unit
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```

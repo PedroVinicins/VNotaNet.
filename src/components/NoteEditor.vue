@@ -8,7 +8,7 @@
         :textContent="title"
       ></h2>
 
-      <!-- Toolbar externa -->
+  
       <div id="toolbar-container">
         <span class="ql-formats">
           <select class="ql-font"></select>
@@ -55,7 +55,6 @@
         </span>
       </div>
 
-      <!-- Editor Quill -->
       <div ref="editorRef" class="editor-content"></div>
     </div>
   </div>
@@ -83,14 +82,15 @@ const title = ref(props.note.name || '')
 const content = ref(props.note.content || '')
 let quill
 
-// Atualiza título
+// EU acho que isso nao é necessário, mas vou deixar aqui
+
 function updateTitle(event) {
   title.value = event.target.innerText
   saveToLocalStorage()
   emit('update-title', title.value)
 }
 
-// Monta o editor Quill
+// Monta
 onMounted(() => {
   quill = new Quill(editorRef.value, {
     theme: 'snow',
@@ -99,7 +99,7 @@ onMounted(() => {
     }
   })
 
-  // Conteúdo inicial
+
   quill.root.innerHTML = content.value
 
   // Detecta mudanças
@@ -109,7 +109,7 @@ onMounted(() => {
     emit('update-content', content.value)
   })
 
-  // Carrega do localStorage se existir
+
   const savedNote = localStorage.getItem('nota-pedro')
   if (savedNote) {
     const { title: savedTitle, content: savedContent } = JSON.parse(savedNote)
@@ -119,16 +119,16 @@ onMounted(() => {
   }
 })
 
-// Atualiza nota quando a prop mudar
+// Observa mudanças na nota
 watch(() => props.note, (newNote) => {
-  title.value = newNote.name || ''
+  title.value = newNote.name || 'd'
   content.value = newNote.content || ''
   if (quill) {
     quill.root.innerHTML = content.value
   }
 }, { immediate: true })
 
-// Salva no localStorage
+
 function saveToLocalStorage() {
   localStorage.setItem('nota-pedro', JSON.stringify({
     title: title.value,
