@@ -1,20 +1,55 @@
 @plugin "daisyui";
-@plugin "flowbite/plugin";
 @import 'tailwindcss';
+
+@plugin "daisyui/theme" {
+  name: "black";
+  default: false;
+  prefersdark: false;
+  color-scheme: "dark";
+  --color-base-100: oklch(14% 0.004 49.25);
+  --color-base-200: oklch(21% 0.006 56.043);
+  --color-base-300: oklch(26% 0.007 34.298);
+  --color-base-content: oklch(96% 0.007 247.896);
+  --color-primary: oklch(58% 0.233 277.117);
+  --color-primary-content: oklch(96% 0.018 272.314);
+  --color-secondary: oklch(69% 0.17 162.48);
+  --color-secondary-content: oklch(97% 0.021 166.113);
+  --color-accent: oklch(72% 0.219 149.579);
+  --color-accent-content: oklch(98% 0.018 155.826);
+  --color-neutral: oklch(44% 0.011 73.639);
+  --color-neutral-content: oklch(98% 0.001 106.423);
+  --color-info: oklch(70% 0.165 254.624);
+  --color-info-content: oklch(28% 0.091 267.935);
+  --color-success: oklch(77% 0.152 181.912);
+  --color-success-content: oklch(27% 0.046 192.524);
+  --color-warning: oklch(75% 0.183 55.934);
+  --color-warning-content: oklch(26% 0.079 36.259);
+  --color-error: oklch(70% 0.191 22.216);
+  --color-error-content: oklch(25% 0.092 26.042);
+  --radius-selector: 1rem;
+  --radius-field: 1rem;
+  --radius-box: 1rem;
+  --size-selector: 0.21875rem;
+  --size-field: 0.21875rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 1;
+}
 
 
 * {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
   scrollbar-width: thin;
-  scrollbar-color: oklch(var(--bc) / 0.2) transparent;}
+  scrollbar-color: oklch(var(--bc) / 0.2) transparent;
+}
+
 
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background:
-    url('https://www.transparenttextures.com/patterns/always-grey.png');
-  background-blend-mode: overlay;
+background-color: #000000;
+background-image: url("https://www.transparenttextures.com/patterns/type.png");
 }
 
 .mobile-header {
@@ -24,9 +59,17 @@
 }
 
 .desktop-header {
-  position: sticky;
+  display: flex;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  padding: 0.5rem;
+  left: 0;
+  right: 0;
   top: 0;
   z-index: 50;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.685);
 }
 
 .main-content {
@@ -35,8 +78,9 @@
 
 .sidebar {
   background-size: cover;
-  background-image: url("https://www.transparenttextures.com/patterns/inspiration-geometry.png");
   border-right: 1px solid #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.774);
 }
 
 .notes-list {
@@ -62,6 +106,7 @@
   padding: 5px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #0f0f0f;
   margin-bottom: 12px;
   cursor: pointer;
   display: flex;
@@ -72,11 +117,20 @@
 .note-item:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
 }
 
 .editor-area {
   background: transparent;
+}
+
+.header .input {
+  width: 50%;
+  padding: 0.9rem 2.5rem;
+  border: 2px solid oklch(var(--bc) / 0.2);
+  border-radius: 0.5rem;
+  background-color: oklch(var(--bc) / 0.1);
+  color: oklch(var(--bc) / 0.8);
+  transition: all 0.2s ease;
 }
 
 .search-container input,

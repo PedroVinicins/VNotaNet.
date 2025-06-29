@@ -57,26 +57,30 @@
     </header>
 
     <!-- Desktop Header -->
-    <header class="desktop-header hidden lg:flex bg-base-100 shadow-md sticky top-0 z-50">
+    <header class="desktop-header hidden lg:flex shadow-md sticky top-0 z-50">
       <div class="navbar max-w-8xl mx-auto w-full px-6">
         <!-- Logo/Brand -->
-        <div class="flex-none">
-          <h1 class="text-2xl font-bold flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>VNotaNet</span>
-          </h1>
-        </div>
+
 
         <!-- Search Bar -->
         <div class="flex-1 px-4">
-          <div class="relative max-w-xl">
+    <div class="items-center gap-2">
+         <h1 class="text-2xl font-bold flex items-center gap-2">
+           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+           </svg>
+           <span>VNotaNet</span>
+         </h1>
+       </div>
+        </div>
+
+        <div class="header flex-1 px-4">
+           <div class="relative max-w-xl">
             <input
               v-model="busca"
               @input="pesquisarNotas"
               placeholder="Pesquisar notas..."
-              class="input input-bordered w-full pl-10 focus:ring-2 focus:ring-primary"
+              class="input"
               aria-label="Search notes"
             />
             <span class="absolute left-3 top-1/2 transform -translate-y-1/2">
@@ -91,7 +95,7 @@
         <div class="flex-none flex items-center gap-2">
           <button
             @click="mostrarDialog = true"
-            class="btn btn-primary gap-2"
+            class="btn gap-2"
             title="Criar nova nota"
           >
             <RiMenuAddFill class="w-5 h-5" />
@@ -124,7 +128,7 @@
           <div class="dropdown dropdown-end">
             <button tabindex="0" class="avatar placeholder" title="Perfil">
               <div class="w-10 rounded-full bg-neutral text-neutral-content">
-                <span>US</span>
+                  <img :src="perfil" alt="Perfil">
               </div>
             </button>
             <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
@@ -340,9 +344,9 @@
 </template>
 
 <script>
-import NoteEditor from '@/components/NoteEditor.vue'
-
+import NoteEditor from '@/components/NoteEditor.vue';
 import { RiFilePdfFill, RiDeleteBin6Fill, RiMenuAddFill, RiXrpFill } from "@remixicon/vue";
+import perfil from '../assets/perfil.jpg';
 
 export default {
   name: 'NotaNet',
@@ -355,6 +359,7 @@ export default {
   },
   data() {
     return {
+      perfil,
       notas: [],
       indiceNotaAtual: 0,
       busca: '',

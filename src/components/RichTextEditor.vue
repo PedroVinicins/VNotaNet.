@@ -105,7 +105,7 @@ export default {
 .editor-content {
   flex: 1;
   overflow-y: auto;
-  font-size: 2  rem;
+  font-size: 2rem;
 }
 
 .ql-formats{
