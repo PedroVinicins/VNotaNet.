@@ -51,3 +51,6 @@ git clone https://github.com/PedroVinicins/VNotaNet.git
 cd VNotaNet
 npm install
 npm run dev
+
+---
+**Desenvolvido com ❤️ usando Vue.js e Tailwind CSS**

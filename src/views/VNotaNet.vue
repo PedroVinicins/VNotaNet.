@@ -1,182 +1,351 @@
 <template>
-  <div class="app-container display-flex justify-space-between">
-    <div class="navbar bg-base-100 shadow-sm">
-      <div class="flex-1">
-        <h1 class="text-xl">NotaNet</h1>
-      </div>
-      <div class="main-navbar bg-base-100 shadow-sm">
-        <ul class="header menu-horizontal w-90">
-          <li>
-            <button @click="mostrarDialog = true" class="btn-new-note">
-              <RiMenuAddFill />
-            </button>
-          </li>
-          <li>
-            <button @click="apagarTodasNotas" class="btn-delete-all">
-              <RiDeleteBin6Fill />
-            </button>
-          </li>
-          <li>
-            <button @click="gerarPDF" class="btn-generate-pdf">
-              <RiFilePdfFill />
-            </button>
-          </li>
-        </ul>
-      </div>
-
-      <div class="search-container">
-        <input v-model="busca" @input="pesquisarNotas" placeholder="Pesquisar notas..." class="search-input" />
-      </div>
-
-      <div class="avatar avatar-online">
-        <div class="w-14 rounded-full">
-          <img src="https://img.daisyui.com/images/profile/demo/idiotsandwich@192.webp" />
-        </div>
-      </div>
-    </div>
-
-    <!-- Caixa de dialogo com o noos mano -->
-    <div v-if="mostrarDialog" class="modal modal-open">
-      <div class="modal-box max-w-2xl p-0 overflow-hidden">
-        <div class="modal-header bg-gradient-to-r p-6">
-          <h3 class="font-bold text-2xl text-white">Nova Nota</h3>
-          <p class="text-blue-100">Preencha os campos para criar sua nota</p>
-        </div>
-
-        <div class="dialog-content p-6 space-y-4">
-          <div class="form-group">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Título *</label>
-            <input v-model="novaNota.name" placeholder="Dê um título para sua nota"
-              class="input input-bordered w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
-          </div>
-
-          <div class="form-group">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Subtítulo</label>
-            <input v-model="novaNota.subtitle" placeholder="Adicione um subtítulo (opcional)"
-              class="input input-bordered w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-          </div>
-
-          <div class="form-group">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Prioridade</label>
-            <select v-model="novaNota.priority"
-              class="select select-bordered w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-              <option disabled selected>Selecione a prioridade</option>
-              <option value="Baixa" class="text-green-600">Baixa</option>
-              <option value="Media" class="text-yellow-600">Média</option>
-              <option value="Alta" class="text-red-600">Alta</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Conteúdo</label>
-            <textarea v-model="novaNota.content" placeholder="Escreva o conteúdo da sua nota..."
-              class="textarea textarea-bordered w-full h-32 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
-          </div>
-        </div>
-
-        <div class="modal-footer px-6 py-4 flex justify-end space-x-3">
-          <button @click="cancelarNovaNota" class="btn btn-ghost hover:bg-gray-200 text-gray-600">
-            Cancelar
-          </button>
-          <button @click="salvarNovaNota"
-            class="btn bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all"
-            :disabled="!novaNota.name" :class="{ 'opacity-70 cursor-not-allowed': !novaNota.name }">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                clip-rule="evenodd" />
+  <div class="app-container bg-base-200 min-h-screen flex flex-col">
+    <!-- Mobile Header -->
+    <header class="mobile-header lg:hidden sticky top-0 z-50 bg-base-100 shadow-md">
+      <div class="flex items-center justify-between p-4">
+        <div class="flex items-center gap-2">
+          <button @click="toggleNotesList" class="btn btn-ghost btn-square">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            Salvar Nota
+          </button>
+          <h1 class="text-xl font-bold ">VNotaNet</h1>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button @click="toggleMobileMenu" class="btn btn-ghost btn-square" aria-label="Menu">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
           </button>
         </div>
       </div>
-    </div>
 
-    <div class="main-content">
-      <ul
-        class="menu inline-flex p-5 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
-        <li>
-          <details open>
-            <summary>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-4 w-4">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+      <!-- Mobile Search -->
+      <div class="px-4 pb-4">
+        <div class="relative">
+          <input
+            v-model="busca"
+            @input="pesquisarNotas"
+            placeholder="Pesquisar notas..."
+            class="input input-bordered w-full pl-10"
+            aria-label="Search notes"
+          />
+          <span class="absolute left-3 top-1/2 transform -translate-y-1/2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </span>
+        </div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div v-if="showMobileMenu" class="mobile-menu bg-base-100 border-t p-4">
+        <div class="flex gap-2">
+          <button @click="handleNewNoteClick" class="btn btn-primary flex-1 gap-2">
+            <RiMenuAddFill class="w-5 h-5" />
+            Nova Nota
+          </button>
+          <button @click="gerarPDF" class="btn btn-ghost" title="Exportar PDF">
+            <RiFilePdfFill class="w-5 h-5" />
+          </button>
+          <button @click="apagarTodasNotas" class="btn btn-ghost text-error" title="Limpar tudo">
+            <RiDeleteBin6Fill class="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Desktop Header -->
+    <header class="desktop-header hidden lg:flex bg-base-100 shadow-md sticky top-0 z-50">
+      <div class="navbar max-w-8xl mx-auto w-full px-6">
+        <!-- Logo/Brand -->
+        <div class="flex-none">
+          <h1 class="text-2xl font-bold flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>VNotaNet</span>
+          </h1>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="flex-1 px-4">
+          <div class="relative max-w-xl">
+            <input
+              v-model="busca"
+              @input="pesquisarNotas"
+              placeholder="Pesquisar notas..."
+              class="input input-bordered w-full pl-10 focus:ring-2 focus:ring-primary"
+              aria-label="Search notes"
+            />
+            <span class="absolute left-3 top-1/2 transform -translate-y-1/2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-              My Files
-            </summary>
-            <ul>
+            </span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex-none flex items-center gap-2">
+          <button
+            @click="mostrarDialog = true"
+            class="btn btn-primary gap-2"
+            title="Criar nova nota"
+          >
+            <RiMenuAddFill class="w-5 h-5" />
+            <span>Nova Nota</span>
+          </button>
+
+          <div class="dropdown dropdown-end">
+            <button tabindex="0" class="btn btn-ghost" title="Mais opções">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+              </svg>
+            </button>
+            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
               <li>
-                <details open>
-                  <summary>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                      stroke="currentColor" class="h-4 w-4">
-                      <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
-                    </svg>
-                    Notas
-                  </summary>
-                  <div class="sidebar ">
-                    <div class="notes-list">
-                      <div v-for="(nota, indice) in notasFiltradas" :key="indice" @click="selecionarNota(indice)"
-                        :class="{
-                          'note-item': true,
-                          'active': indiceNotaAtual === indice,
-                          [nota.priority]: true
-                        }">
-                        <div class="note-content">
-                          <div class="note-title">
-                            {{ nota.name }}
-                          </div>
-                          <p class="note-subtitle">{{ nota.subtitle || 'Sem subtítulo' }}</p>
-                          <p class="note-date">{{ nota.date }}</p>
-                          <div v-if="nota.priority" class="priority" :class="nota.priority">
-                            {{ nota.priority }}
-                          </div>
-                          <div v-if="nota.name.length >= 43" class="error-message">
-                            Limite de caracteres atingido!
-                          </div>
-                          <button class="delete-note-btn" @click.stop="apagarNota(indice)">
-                            <span class="delete-icon">
-                              <RiXrpFill size="12px" />
-                            </span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </details>
+                <button @click="gerarPDF" class="flex gap-2">
+                  <RiFilePdfFill class="w-5 h-5" />
+                  Exportar PDF
+                </button>
+              </li>
+              <li>
+                <button @click="apagarTodasNotas" class="flex gap-2 text-error">
+                  <RiDeleteBin6Fill class="w-5 h-5" />
+                  Limpar Tudo
+                </button>
               </li>
             </ul>
-          </details>
-        </li>
-        <li>
-          <a>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="currentColor" class="h-4 w-4">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-            </svg>
-            NotaNEt
-          </a>
-        </li>
-      </ul>
-      <div class="note-editor-container">
-        <NoteEditor v-if="notaAtual" :note="notaAtual" @update="atualizarConteudoNota" />
-        <div v-else class="no-note-selected">
-          <p>Selecione uma nota ou crie uma nova</p>
+          </div>
+
+          <!-- User Avatar -->
+          <div class="dropdown dropdown-end">
+            <button tabindex="0" class="avatar placeholder" title="Perfil">
+              <div class="w-10 rounded-full bg-neutral text-neutral-content">
+                <span>US</span>
+              </div>
+            </button>
+            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li><a>Meu Perfil</a></li>
+              <li><a>Configurações</a></li>
+              <li><a class="text-error">Sair</a></li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex flex-1 flex-col lg:flex-row overflow-hidden">
+      <!-- Sidebar -->
+      <aside
+        class="sidebar bg-base-100 shadow-inner lg:w-80 xl:w-96 transition-all duration-300 ease-in-out"
+        :class="{
+          'hidden lg:block': !showNotesList,
+          'absolute lg:relative z-40 w-full h-full lg:h-auto': showNotesList
+        }"
+      >
+        <div class="h-full flex flex-col">
+          <!-- Mobile Notes Toggle -->
+          <div class="lg:hidden p-4 border-b flex justify-between items-center bg-base-100">
+            <h2 class="font-semibold text-lg">Minhas Notas</h2>
+            <button @click="toggleNotesList" class="btn btn-ghost btn-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Notes List -->
+          <div class="flex-1 overflow-y-auto">
+            <div class="p-4">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <h2 class="font-semibold text-lg">Minhas Notas</h2>
+                </div>
+                <div class="badge badge-primary">{{ notasFiltradas.length }}</div>
+              </div>
+
+              <div class="notes-list space-y-2">
+                <div
+                  v-for="(nota, indice) in notasFiltradas"
+                  :key="nota.id"
+                  @click="selecionarNota(indice)"
+                  class="note-item card bg-base-100 shadow-sm hover:shadow-md transition-all cursor-pointer group"
+                  :class="{
+                    'ring-2 ring-primary': indiceNotaAtual === getOriginalIndex(indice),
+                    'border-l-4': true,
+                    'border-l-success': nota.priority === 'Baixa',
+                    'border-l-warning': nota.priority === 'Media',
+                    'border-l-error': nota.priority === 'Alta'
+                  }"
+                >
+                  <div class="card-body p-4">
+                    <div class="flex justify-between items-start gap-2">
+                      <div class="flex-1 min-w-0">
+                        <h3 class="card-title text-base font-medium truncate">{{ nota.name }}</h3>
+                        <p class="text-sm text-base-content/70 truncate">{{ nota.subtitle || 'Sem subtítulo' }}</p>
+                        <div class="flex items-center justify-between mt-2">
+                          <span class="text-xs text-base-content/50">{{ formatDate(nota.date) }}</span>
+                          <div class="badge badge-xs" :class="{
+                            'badge-success': nota.priority === 'Baixa',
+                            'badge-warning': nota.priority === 'Media',
+                            'badge-error': nota.priority === 'Alta'
+                          }">
+                            {{ nota.priority }}
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        @click.stop="apagarNota(indice)"
+                        class="btn btn-ghost btn-xs opacity-0 group-hover:opacity-100 text-error hover:bg-error hover:text-error-content transition-opacity"
+                        aria-label="Delete note"
+                      >
+                        <RiXrpFill class="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div v-if="notasFiltradas.length === 0" class="text-center py-8 text-base-content/50">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <p class="text-lg font-medium mb-2">Nenhuma nota encontrada</p>
+                  <p class="text-sm mb-4">Crie sua primeira nota para começar</p>
+                  <button @click="mostrarDialog = true" class="btn btn-primary gap-2">
+                    <RiMenuAddFill class="w-5 h-5" />
+                    Criar Nota
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Editor Area -->
+      <section class="editor-area flex-1 bg-base-200 overflow-auto">
+        <div class="h-full p-4 lg:p-6">
+          <NoteEditor
+            v-if="notaAtual"
+            :note="notaAtual"
+            @update:title="(title) => atualizarConteudoNota({ title })"
+            @update:content="(content) => atualizarConteudoNota({ content })"
+            class="h-full"
+          />
+          <div v-else class="flex items-center justify-center h-full text-center">
+            <div class="max-w-md">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 mx-auto mb-6 text-base-content/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              <h3 class="text-2xl font-semibold mb-4 text-base-content/70">Nenhuma nota selecionada</h3>
+              <p class="text-base-content/50 mb-6">Selecione uma nota existente ou crie uma nova para começar a editar</p>
+              <button @click="mostrarDialog = true" class="btn btn-primary gap-2">
+                <RiMenuAddFill class="w-5 h-5" />
+                Criar Nova Nota
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- New Note Modal -->
+    <dialog v-if="mostrarDialog" class="modal modal-open" @click.self="cancelarNovaNota">
+      <div class="modal-box max-w-2xl p-0 overflow-hidden">
+        <div class="content p-6 text-primary-content">
+          <h3 class="font-bold text-2xl">Nova Nota</h3>
+          <p>Preencha os campos para criar sua nota</p>
+        </div>
+
+        <form @submit.prevent="salvarNovaNota" class="p-6">
+          <div class="space-y-4">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-medium">Título *</span>
+              </label>
+              <input
+                v-model.trim="novaNota.name"
+                placeholder="Dê um título para sua nota"
+                class="input input-bordered w-full focus:input-primary"
+                required
+                maxlength="50"
+                aria-required="true"
+              >
+              <label class="label">
+                <span class="label-text-alt">{{ novaNota.name.length }}/50 caracteres</span>
+              </label>
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-medium">Subtítulo</span>
+              </label>
+              <input
+                v-model.trim="novaNota.subtitle"
+                placeholder="Adicione um subtítulo (opcional)"
+                class="input input-bordered w-full focus:input-primary"
+                maxlength="100"
+              >
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-medium">Prioridade</span>
+              </label>
+              <select v-model="novaNota.priority" class="select select-bordered w-full focus:select-primary">
+                <option value="Baixa" class="text-success">🟢 Baixa</option>
+                <option value="Media" class="text-warning">🟡 Média</option>
+                <option value="Alta" class="text-error">🔴 Alta</option>
+              </select>
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-medium">Conteúdo</span>
+              </label>
+              <textarea
+                v-model.trim="novaNota.content"
+                placeholder="Escreva o conteúdo da sua nota..."
+                class="textarea textarea-bordered w-full h-32 focus:textarea-primary"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="modal-action mt-6">
+            <button type="button" @click="cancelarNovaNota" class="btn btn-ghost">
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary gap-2"
+              :disabled="!novaNota.name"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              Salvar Nota
+            </button>
+          </div>
+        </form>
+      </div>
+    </dialog>
   </div>
 </template>
 
 <script>
 import NoteEditor from '@/components/NoteEditor.vue'
+
 import { RiFilePdfFill, RiDeleteBin6Fill, RiMenuAddFill, RiXrpFill } from "@remixicon/vue";
 
 export default {
-  name: 'JumpNotas',
+  name: 'NotaNet',
   components: {
     NoteEditor,
     RiFilePdfFill,
@@ -186,15 +355,18 @@ export default {
   },
   data() {
     return {
-      notas: JSON.parse(localStorage.getItem('notasData')) || [],
+      notas: [],
       indiceNotaAtual: 0,
       busca: '',
       notasFiltradas: [],
       mostrarDialog: false,
+      showMobileMenu: false,
+      showNotesList: false,
+      isResizing: false,
       novaNota: {
         name: '',
         subtitle: '',
-        priority: 'media',
+        priority: 'Media',
         content: ''
       }
     }
@@ -205,34 +377,130 @@ export default {
     }
   },
   created() {
-    this.notasFiltradas = [...this.notas]
-    // Se não houver notas, cria uma padrão <
-    if (this.notas.length === 0) {
-      this.criarNotaPadrao()
-    }
+    this.carregarNotas()
+    this.pesquisarNotas()
+  },
+  mounted() {
+    this.handleResize()
+    window.addEventListener('resize', this.handleResize)
+    this.setupMaincontentResize()
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.handleResize)
+    this.cleanupSidebarResize()
   },
   methods: {
+    setupMaincontentResize() {
+      const sidebarElement = document.querySelector('.sidebar')
+      const resizeHandle = document.createElement('div')
+      resizeHandle.className = 'resize-handle'
+      sidebarElement.appendChild(resizeHandle)
+
+      resizeHandle.addEventListener('mousedown', (e) => {
+        this.isResizing = true
+        document.body.style.cursor = 'col-resize'
+        document.addEventListener('mousemove', this.handleResizeMove)
+        document.addEventListener('mouseup', this.stopResize)
+        e.preventDefault()
+      })
+    },
+    handleResizeMove(e) {
+      if (!this.isResizing) return
+      const sidebar = document.querySelector('.sidebar')
+      const newWidth = e.clientX
+      if (newWidth > 200 && newWidth < 600) {
+        sidebar.style.width = `${newWidth}px`
+      }
+    },
+    stopResize() {
+      this.isResizing = false
+      document.body.style.cursor = ''
+      document.removeEventListener('mousemove', this.handleResizeMove)
+      document.removeEventListener('mouseup', this.stopResize)
+    },
+    cleanupSidebarResize() {
+      const resizeHandle = document.querySelector('.resize-handle')
+      if (resizeHandle) {
+        resizeHandle.remove()
+      }
+      document.removeEventListener('mousemove', this.handleResizeMove)
+      document.removeEventListener('mouseup', this.stopResize)
+    },
+    carregarNotas() {
+      try {
+        const notasSalvas = localStorage.getItem('notasData')
+        this.notas = notasSalvas ? JSON.parse(notasSalvas) : []
+        this.notas.forEach((nota, index) => {
+          if (!nota.id) {
+            this.$set(this.notas, index, {
+              ...nota,
+              id: this.gerarIdUnico()
+            })
+          }
+        })
+        if (this.notas.length === 0) this.criarNotaPadrao()
+      } catch {
+        this.notas = []
+        this.criarNotaPadrao()
+      }
+    },
+    gerarIdUnico() {
+      return Date.now().toString(36) + Math.random().toString(36).substring(2)
+    },
+    handleResize() {
+      this.showNotesList = window.innerWidth >= 1024
+      if (window.innerWidth >= 1024) this.showMobileMenu = false
+    },
+    toggleMobileMenu() {
+      this.showMobileMenu = !this.showMobileMenu
+    },
+    toggleNotesList() {
+      this.showNotesList = !this.showNotesList
+    },
+    handleNewNoteClick() {
+      this.mostrarDialog = true
+      this.showMobileMenu = false
+    },
     criarNotaPadrao() {
-      this.notas.push({
+      const notaPadrao = {
+        id: this.gerarIdUnico(),
         name: 'Bem-vindo ao NotaNet',
         subtitle: 'Sua primeira nota',
-        date: new Date().toLocaleDateString(),
-        content: 'Comece a escrever suas notas aqui!'
-      })
+        date: new Date().toISOString(),
+        priority: 'Media',
+        content: 'Esta é uma nota de exemplo para ajudá-lo a começar.'
+      }
+      this.notas.push(notaPadrao)
       this.salvarNotas()
     },
-    salvarNovaNota() {
-      const notaCompleta = {
-        ...this.novaNota,
-        date: new Date().toLocaleDateString()
+    formatDate(dateString) {
+      if (!dateString) return ''
+      try {
+        const date = new Date(dateString)
+        return isNaN(date.getTime()) ? dateString : date.toLocaleDateString('pt-BR')
+      } catch {
+        return dateString
       }
-
-      this.notas.push(notaCompleta)
-      this.indiceNotaAtual = this.notas.length - 1
+    },
+    salvarNovaNota() {
+      if (!this.novaNota.name.trim()) return
+      const notaCompleta = {
+        id: this.gerarIdUnico(),
+        name: this.novaNota.name.trim(),
+        subtitle: this.novaNota.subtitle.trim(),
+        content: this.novaNota.content.trim(),
+        priority: this.novaNota.priority,
+        date: new Date().toISOString()
+      }
+      this.notas.unshift(notaCompleta)
+      this.indiceNotaAtual = 0
       this.salvarNotas()
       this.pesquisarNotas()
       this.mostrarDialog = false
       this.resetarNovaNota()
+      if (window.innerWidth < 1024) {
+        this.showNotesList = true
+      }
     },
     cancelarNovaNota() {
       this.mostrarDialog = false
@@ -242,7 +510,7 @@ export default {
       this.novaNota = {
         name: '',
         subtitle: '',
-        priority: 'media',
+        priority: 'Media',
         content: ''
       }
     },
@@ -255,101 +523,121 @@ export default {
         this.criarNotaPadrao()
       }
     },
-    apagarNota(indice) {
-      if (confirm(`Tem certeza que deseja apagar a nota "${this.notas[indice].name}"?`)) {
-        this.notas.splice(indice, 1)
-        if (this.indiceNotaAtual >= indice) {
+    apagarNota(indiceFiltrado) {
+      const originalIndex = this.getOriginalIndex(indiceFiltrado)
+      const nota = this.notas[originalIndex]
+      if (confirm(`Apagar a nota "${nota.name}"?`)) {
+        this.notas.splice(originalIndex, 1)
+        if (this.indiceNotaAtual >= originalIndex) {
           this.indiceNotaAtual = Math.max(0, this.indiceNotaAtual - 1)
         }
-
         if (this.notas.length === 0) {
           this.criarNotaPadrao()
         }
-
         this.salvarNotas()
         this.pesquisarNotas()
       }
     },
-    gerarPDF() {
-      if (this.notas.length === 0) {
-        alert('Nenhuma nota encontrada!')
-        return
+    getOriginalIndex(indiceFiltrado) {
+      if (indiceFiltrado < 0 || indiceFiltrado >= this.notasFiltradas.length) return 0
+      const notaFiltrada = this.notasFiltradas[indiceFiltrado]
+      return this.notas.findIndex(nota => nota.id === notaFiltrada.id)
+    },
+    selecionarNota(indiceFiltrado) {
+      this.indiceNotaAtual = this.getOriginalIndex(indiceFiltrado)
+      if (window.innerWidth < 1024) {
+        this.showNotesList = false
       }
-
-      import('jspdf').then(jsPDF => {
-        const doc = new jsPDF.default()
-        doc.setFontSize(18)
-        doc.text('Suas Notas', 10, 10)
-
-        let yPos = 20
-        doc.setFontSize(12)
-
-        this.notas.forEach((nota, indice) => {
-          doc.text(`Nota ${indice + 1}: ${nota.name}`, 10, yPos)
-          yPos += 7
-          doc.text(`Subtítulo: ${nota.subtitle || 'Nenhum'}`, 10, yPos)
-          yPos += 7
-          doc.text(`Prioridade: ${nota.priority}`, 10, yPos)
-          yPos += 7
-          doc.text(`Data: ${nota.date}`, 10, yPos)
-          yPos += 10
-
-          const linhasConteudo = doc.splitTextToSize(nota.content || '', 180)
-          doc.text('Conteúdo:', 10, yPos)
-          yPos += 7
-          doc.text(linhasConteudo, 10, yPos)
-          yPos += (linhasConteudo.length * 7) + 15
-
-          if (yPos > 280) {
-            doc.addPage()
-            yPos = 20
-          }
-        })
-
-        doc.save('Suas_Notas.pdf')
-      })
     },
-    selecionarNota(indice) {
-      this.indiceNotaAtual = indice
-    },
-  
-    atualizarConteudoNota(conteudoAtualizado) {
-      this.notas[this.indiceNotaAtual].content = conteudoAtualizado
-      this.salvarNotas()
+    atualizarConteudoNota({ title, content }) {
+      if (this.notas[this.indiceNotaAtual]) {
+        if (title !== undefined) this.notas[this.indiceNotaAtual].name = title
+        if (content !== undefined) this.notas[this.indiceNotaAtual].content = content
+        this.salvarNotas()
+      }
     },
     ordenarPorPrioridade(notas) {
-      const ordemPrioridade = { 'Media': 3, 'Baixa': 2, 'Alta': 1 };
-      return [...notas].sort((a, b) => {
-        return ordemPrioridade[a.priority] - ordemPrioridade[b.priority];
-      });
+      const ordem = { 'Alta': 1, 'Media': 2, 'Baixa': 3 }
+      return [...notas].sort((a, b) => ordem[a.priority] - ordem[b.priority])
     },
-
     pesquisarNotas() {
-      if (this.busca.trim() === '') {
-        this.notasFiltradas = this.ordenarPorPrioridade(this.notas);
-        return;
+      const termo = this.busca.trim().toLowerCase()
+      if (!termo) {
+        this.notasFiltradas = this.ordenarPorPrioridade(this.notas)
+        return
       }
-
-      const termo = this.busca.toLowerCase();
-      const notasFiltradas = this.notas.filter(nota =>
-        nota.name.toLowerCase().includes(termo) ||
-        (nota.subtitle && nota.subtitle.toLowerCase().includes(termo)) ||
-        (nota.content && nota.content.toLowerCase().includes(termo))
-      );
-
-      this.notasFiltradas = this.ordenarPorPrioridade(notasFiltradas);
-
+      this.notasFiltradas = this.ordenarPorPrioridade(
+        this.notas.filter(nota =>
+          nota.name.toLowerCase().includes(termo) ||
+          (nota.subtitle && nota.subtitle.toLowerCase().includes(termo)) ||
+          (nota.content && nota.content.toLowerCase().includes(termo))
+        )
+      )
       if (this.notasFiltradas.length > 0) {
-        this.indiceNotaAtual = this.notas.indexOf(this.notasFiltradas[0]);
+        const notaAtualVisivel = this.notasFiltradas.some(
+          nota => nota.id === this.notas[this.indiceNotaAtual]?.id
+        )
+        if (!notaAtualVisivel) this.selecionarNota(0)
       }
     },
     salvarNotas() {
       localStorage.setItem('notasData', JSON.stringify(this.notas))
-      this.notasFiltradas = [...this.notas]
-    },
-    sair() {
-      window.location.href = "index.html"
     }
   }
 }
 </script>
+
+<style>
+.resize-handle {
+  width: 5px;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  cursor: col-resize;
+  background-color: rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s;
+}
+
+.resize-handle:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.sidebar {
+  position: relative;
+  min-width: 250px;
+  max-width: 500px;
+  resize: horizontal;
+  overflow: auto;
+}
+
+/* Hide the default resize handle */
+.sidebar::-webkit-resizer {
+  display: none;
+}
+
+.sidebar {
+  position: relative;
+  height: 100vh;
+  overflow-y: auto;
+  width: 300px; /* Default width */
+}
+
+/* Responsive adjustments */
+@media (max-width: 1023px) {
+  .sidebar {
+    height: auto;
+    max-height: 50vh;
+    width: 100% !important;
+    resize: none;
+  }
+
+  .editor-area {
+    min-height: 50vh;
+  }
+
+  .resize-handle {
+    display: none;
+  }
+}
+</style>

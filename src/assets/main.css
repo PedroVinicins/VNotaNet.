@@ -2,332 +2,174 @@
 @plugin "flowbite/plugin";
 @import 'tailwindcss';
 
-/* 🌈 Frecuras principais */
-:root {
-  --bg-main: oklch(21% 0.006 56.043);
-  --bg-light: oklch(25% 0.01 56.043);
-  --bg-hover: oklch(24% 0.006 56.043);
-  --bg-active: oklch(26% 0.006 56.043);
-  --text-primary: #fff;
-  --text-secondary: #aaa;
-  --text-muted: #888;
-  --scrollbar-color: bisque;
-}
 
 * {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-  transition: all 0.2s ease-in-out;
-  box-sizing: border-box;
-    scrollbar-width: thin;
-      scrollbar-color: #ffff #333;
-}
+  scrollbar-width: thin;
+  scrollbar-color: oklch(var(--bc) / 0.2) transparent;}
 
-body, html {
-  height: 100%;
-  width: 100%;
-  background-color: var(--bg-main);
-  color: var(--text-primary);
-  overflow: hidden;
+.app-container {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  background:
+    url('https://www.transparenttextures.com/patterns/always-grey.png');
+  background-blend-mode: overlay;
 }
 
-.app-container::before {
-  content: 'N ';
-  position: absolute;
-  left: 50%;
-  top: 10%;
-  transform: translateX(-50%);
-  font-size: 30rem;
-  font-weight: 400;
-  line-height: 50rem;
-  opacity: 0.2;
-  z-index: -100;
-  transition: all 0.3s ease;
+.mobile-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
-.navbar {
-  display: flex;
-  width: 100%;
-  padding: 10px 24px;
-  justify-content: space-between;
-  align-items: center;
-  backdrop-filter: blur(10px);
-  background-color: color-mix(in oklch, var(--bg-main) 80%, transparent);
-  border-bottom: 1px solid #2c2c2e;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.main-navbar {
-  display: flex;
-  width: 100%;
-  padding: 8px 16px;
-  justify-content: center;
-  align-items: center;
-  backdrop-filter: blur(10px);
-  background-color: color-mix(in oklch, var(--bg-main) 10%, transparent);
-  z-index: 1;
+.desktop-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
 .main-content {
-  display: flex;
-  flex-direction: row-reverse;
-  flex: 1;
-  width: 100%;
-  height: calc(100vh - 60px);
-  background-color: var(--bg-main);
-  overflow: hidden;
+  min-height: calc(100vh - 80px);
 }
 
-.menu {
+.sidebar {
+  background-size: cover;
+  background-image: url("https://www.transparenttextures.com/patterns/inspiration-geometry.png");
+  border-right: 1px solid #333;
+}
+
+.notes-list {
+  scrollbar-width: thin;
+  scrollbar-color: oklch(var(--bc) / 0.2) transparent;
+}
+
+.notes-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notes-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notes-list::-webkit-scrollbar-thumb {
+  background: oklch(var(--bc) / 0.2);
+  border-radius: 3px;
+}
+
+.note-item {
+  transition: all 0.2s ease;
+  padding: 5px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 12px;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
-  padding: 1rem;
-  background-color: var(--bg-main);
-  border-left: 1px solid #333;
-  overflow-y: auto;
-  flex-shrink: 0;
-}
-.menu:hover {
-  transform: translateX(-10px);
-}
-
-.header {
-  display: flex;
-  padding: 12px;
-  gap: 10px;
-  width: auto;
-  border-radius: 12px;
-  background-color: var(--bg-light);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-}
-
-.priority {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  margin: 4px;
-}
-
-.priority.Baixa {
-  color: #166534;
-  border: 1px solid #166534;
-}
-
-.priority.Media {
-  color: #854d0e;
-  border: 1px solid #854d0e;
-}
-
-.priority.Alta {
-  color: #991b1b;
-  border: 1px solid #991b1b;
-}
-
-.note-item {
-  position: relative;
-  border-left: 3px solid transparent;
-  transition: all 0.2s ease;
-}
-
-.note-item.active {
-  background-color: #f3f4f600;
-  border-left: 3px solid #3b82f6;
-}
-
-.note-item.Baixa.active {
-  border-left-color: #166534;
-}
-
-.note-item.Media.active {
-  border-left-color: #854d0e;
-}
-
-.note-item.Alta.active {
-  border-left-color: #991b1b;
-}
-
-.modal-box {
-  border-radius: 12px;
-  box-shadow: 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  border: none;
-  overflow-y: auto;
-}
-
-.modal-header {
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-  backdrop-filter: blur(100px);
-  background-color: color-mix(in oklch, var(--bg-main) 70%, transparent);
-}
-
-.input,
-.select,
-.textarea {
-  display: block;
-  outline: none;
-  resize: none;
-  border: none;
-  overflow-y: auto;
-  transition: all 0.3s ease;
-  border: 1px solid var(--bg-hover);
-  border-radius: 8px;
-  width: 100%;
-}
-
-.input:focus,
-.select:focus,
-.textarea:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-}
-
-.btn {
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.btn-primary {
-  background-color: #2563eb;
-}
-
-.btn-primary:hover {
-  background-color: #1d4ed8;
-  transform: translateY(-1px);
-}
-
-.btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.3s;
-}
-.modal-enter,
-.modal-leave-to {
-  opacity: 0;
-}
-
-.modal-box {
-  animation: modalIn 0.3s ease-out;
-}
-
-.note-item {
-  display: flex;
-  justify-content: center;
-  align-self: center;
-  margin-bottom: 8px;
-  cursor: pointer;
+  gap: 8px;
 }
 
 .note-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+}
+
+.editor-area {
+  background: transparent;
+}
+
+.search-container input,
+.search-container-mobile input {
+  transition: all 0.2s ease;
+}
+
+.search-container input:focus,
+.search-container-mobile input:focus {
   transform: scale(1.02);
-  background-color: var(--bg-hover);
 }
 
-.note-item:active {
-  background-color: var(--bg-active);
+.modal-box {
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
-.note-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  flex: 1;
-  padding: 12px;
-  width: 100%;
-  border-radius: 8px;
+/* isso e o header do modal */
+.content{
+ background-image: url("https://www.transparenttextures.com/patterns/inspiration-geometry.png");
 }
 
-.note-title {
-  display: flex;
-  min-width: none;
-  width: 100%;
-  outline: none;
-  border: none;
+@media (max-width: 1023px) {
+  .notes-container {
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+
+  .editor-area {
+    min-height: 50vh;
+  }
+}
+
+/* Animações suaves */
+.modal {
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.mobile-menu {
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Melhorias de acessibilidade */
+.btn:focus,
+.input:focus,
+.textarea:focus,
+.select:focus {
+  outline: 2px solid oklch(var(--p));
+  outline-offset: 2px;
+}
+
+/* Indicadores visuais melhorados */
+.badge {
   font-weight: 600;
   text-transform: uppercase;
-  font-size: 14px;
-  flex-grow: 1;
-  margin-right: 5px;
-  color: var(--text-primary);
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
 }
 
-.note-date {
-  margin-left: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-secondary);
+/* Responsividade aprimorada */
+@media (max-width: 640px) {
+  .modal-box {
+    margin: 1rem;
+    max-width: calc(100vw - 2rem);
+  }
+
+  .navbar {
+    padding: 0.5rem 1rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
 }
 
-.delete-icon {
-  color: #bbb;
-  transition: color 0.2s ease-in-out;
-}
-.delete-icon:hover {
-  cursor: pointer;
-  color: red;
-}
 
-.no-note-selected {
-  display: flex;
-  width: 90vh;
-  min-width: 80vw;
-  font-size: 40px;
-  font-weight: 600;
-  color: var(--text-primary);
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
-
-input {
-  background: rgba(255, 255, 255, 0.05);
-  border: none;
-  outline: none;
-  width: 400px;
-  padding: 10px 20px;
-  margin-right: 12px;
-  font-weight: 500;
-  font-size: 14px;
-  border-radius: 9999px;
-  box-shadow: inset 2px 5px 10px rgba(5, 5, 5, 0.25);
-  color: var(--text-primary);
-  text-align: center;
-  text-transform: uppercase;
-  transition: box-shadow 0.3s ease;
-}
-
-input:focus {
-  box-shadow: 0 0 0 2px #ffffff40;
-}
-
-.editor-title {
-  display: block;
-  width: 100%;
-  max-width: 100vh;
-  padding: 10px 20px;
-  font-size: 34px;
-  font-weight: 800;
-  color: var(--text-primary);
-  transition: all 0.3s ease;
-  border: none;
-  outline: none;
-  resize: vertical;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
-
-.note-editor-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  overflow: hidden;
-}
