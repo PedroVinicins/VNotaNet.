@@ -15,6 +15,7 @@
     "@remixicon/vue": "^4.6.0",
     "@tailwindcss/vite": "^4.1.8",
     "@tinymce/tinymce-vue": "^6.1.0",
+    "firebase": "^11.10.0",
     "flowbite": "^3.1.2",
     "jspdf": "^3.0.1",
     "quill": "^2.0.3",
