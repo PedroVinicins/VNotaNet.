@@ -42,10 +42,7 @@
       <!-- Mobile Menu -->
       <div v-if="showMobileMenu" class="mobile-menu bg-base-100 border-t p-4">
         <div class="flex gap-2">
-          <button @click="handleNewNoteClick" class="btn btn-primary flex-1 gap-2">
-            <RiMenuAddFill class="w-5 h-5" />
-            Nova Nota
-          </button>
+
           <button @click="gerarPDF" class="btn btn-ghost" title="Exportar PDF">
             <RiFilePdfFill class="w-5 h-5" />
           </button>
@@ -54,13 +51,13 @@
           </button>
         </div>
       </div>
+
     </header>
 
     <!-- Desktop Header -->
     <header class="desktop-header hidden lg:flex shadow-md sticky top-0 z-50">
       <div class="navbar max-w-8xl mx-auto w-full px-6">
         <!-- Logo/Brand -->
-
 
         <!-- Search Bar -->
         <div class="flex-1 px-4">
@@ -73,6 +70,7 @@
          </h1>
        </div>
         </div>
+
 
         <div class="header flex-1 px-4">
            <div class="relative max-w-xl">
@@ -124,6 +122,7 @@
             </ul>
           </div>
 
+
           <!-- User Avatar -->
           <div class="dropdown dropdown-end">
             <button tabindex="0" class="avatar placeholder" title="Perfil">
@@ -140,6 +139,8 @@
         </div>
       </div>
     </header>
+
+
 
     <!-- Main Content -->
     <main class="flex flex-1 flex-col lg:flex-row overflow-hidden">
@@ -161,6 +162,7 @@
               </svg>
             </button>
           </div>
+
 
           <!-- Notes List -->
           <div class="flex-1 overflow-y-auto">
@@ -341,6 +343,10 @@
       </div>
     </dialog>
   </div>
+     <button @click="handleNewNoteClick" class="bunttao flex-1 gap-2">
+                    <RiMenuAddFill class="w-5 h-5" />
+                    Nova Nota
+                  </button>
 </template>
 
 <script>

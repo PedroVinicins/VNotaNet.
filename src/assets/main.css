@@ -43,6 +43,9 @@
   scrollbar-color: oklch(var(--bc) / 0.2) transparent;
 }
 
+.bunttao{
+  display: none;
+}
 
 .app-container {
   display: flex;
@@ -169,6 +172,7 @@ background-image: url("https://www.transparenttextures.com/patterns/type.png");
   animation: fadeIn 0.2s ease;
 }
 
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -211,6 +215,49 @@ background-image: url("https://www.transparenttextures.com/patterns/type.png");
 }
 
 /* Responsividade aprimorada */
+@media (max-width: 760px) {
+  .desktop-header {
+    display: none;
+  }
+
+  .mobile-header {
+    padding: 0.5rem;
+  }
+input{
+  width: 100%;
+  padding: 1rem 3rem;
+  border: 2px solid oklch(var(--bc) / 0.2);
+  border-radius: 0.5rem;
+  background-color: oklch(var(--bc) / 0.1);
+  color: oklch(var(--bc) / 0.8);
+  transition: all 0.2s ease;
+}
+
+.bunttao{
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  z-index: 999;
+}
+  .bunttao:hover {
+    background: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    transform: translateX(-50%) scale(1.05);
+  }
+
+}
 @media (max-width: 640px) {
   .modal-box {
     margin: 1rem;

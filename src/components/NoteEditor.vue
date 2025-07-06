@@ -1,15 +1,7 @@
 <template>
   <div class="note-editor-container">
-    <input
-      v-model="title"
-      @input="updateTitle"
-      placeholder="Título da nota"
-      class="editor-title"
-    />
-    <RichTextEditor
-      v-model="content"
-      class="editor-content"
-    />
+    <input v-model="title" @input="updateTitle" placeholder="Título da nota" class="editor-title" />
+    <RichTextEditor v-model="content" class="editor-content" />
   </div>
 </template>
 
@@ -59,7 +51,6 @@ export default {
 .note-editor-container {
   display: flex;
   flex-direction: column;
-  height: 100%;
   gap: 1rem;
 }
 
@@ -82,8 +73,8 @@ export default {
   color: rgb(185, 185, 185);
 }
 
-.editor-content {
-  flex: 1;
-  min-height: 300px;
-}
+/* O
+.editor-content ele ta no RichTextEditor por conta das chamadas no js
+pra temas e size fonte
+ */
 </style>
