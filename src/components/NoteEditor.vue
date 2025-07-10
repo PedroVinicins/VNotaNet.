@@ -62,14 +62,13 @@ export default {
   border-radius: 0.5rem;
   outline: none;
   width: 100%;
+    background: #222;
   transition: border 0.2s ease, box-shadow 0.2s ease;
   color: rgb(255, 255, 255);
 }
 
+
 .editor-title:focus {
-  border: 1px solid rgb(47, 80, 173);
-  box-shadow: 0 0 0 1px rgba(47, 80, 173, 0.5);
-  background-color: rgba(47, 80, 173, 0.1);
   color: rgb(185, 185, 185);
 }
 

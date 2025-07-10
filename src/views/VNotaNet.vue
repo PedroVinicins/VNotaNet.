@@ -1,176 +1,103 @@
 <template>
   <div class="app-container bg-base-200 min-h-screen flex flex-col">
-    <!-- Mobile Header -->
-    <header class="mobile-header lg:hidden sticky top-0 z-50 bg-base-100 shadow-md">
-      <div class="flex items-center justify-between p-4">
-        <div class="flex items-center gap-2">
-          <button @click="toggleNotesList" class="btn btn-ghost btn-square">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          </button>
-          <h1 class="text-xl font-bold ">VNotaNet</h1>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <button @click="toggleMobileMenu" class="btn btn-ghost btn-square" aria-label="Menu">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Mobile Search -->
-      <div class="px-4 pb-4">
-        <div class="relative">
-          <input
-            v-model="busca"
-            @input="pesquisarNotas"
-            placeholder="Pesquisar notas..."
-            class="input input-bordered w-full pl-10"
-            aria-label="Search notes"
-          />
-          <span class="absolute left-3 top-1/2 transform -translate-y-1/2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </span>
-        </div>
-      </div>
-
-      <!-- Mobile Menu -->
-      <div v-if="showMobileMenu" class="mobile-menu bg-base-100 border-t p-4">
-        <div class="flex gap-2">
-
-          <button @click="gerarPDF" class="btn btn-ghost" title="Exportar PDF">
-            <RiFilePdfFill class="w-5 h-5" />
-          </button>
-          <button @click="apagarTodasNotas" class="btn btn-ghost text-error" title="Limpar tudo">
-            <RiDeleteBin6Fill class="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-
-    </header>
-
     <!-- Desktop Header -->
-    <header class="desktop-header hidden lg:flex shadow-md sticky top-0 z-50">
-      <div class="navbar max-w-8xl mx-auto w-full px-6">
-        <!-- Logo/Brand -->
-
+    <header class="desktop-header">
+      <div class="navbar">
         <!-- Search Bar -->
-        <div class="flex-1 px-4">
-    <div class="items-center gap-2">
-         <h1 class="text-2xl font-bold flex items-center gap-2">
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-           </svg>
-           <span>VNotaNet</span>
-         </h1>
-       </div>
+        <div class="nav">
+          <div class="titulo">
+            <h1 class="text-2xl font-bold flex items-center gap-2">
+              <span>VNotaNet</span>
+            </h1>
+          </div>
         </div>
 
-
-        <div class="header flex-1 px-4">
-           <div class="relative max-w-xl">
-            <input
-              v-model="busca"
-              @input="pesquisarNotas"
-              placeholder="Pesquisar notas..."
-              class="input"
-              aria-label="Search notes"
-            />
+        <div class="search">
+          <div class="relative">
+            <input v-model="busca" @input="pesquisarNotas" placeholder="Pesquisar notas..." class="input-search"
+              aria-label="Search notes" />
             <span class="absolute left-3 top-1/2 transform -translate-y-1/2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </span>
           </div>
         </div>
-
-        <!-- Actions -->
-        <div class="flex-none flex items-center gap-2">
-          <button
-            @click="mostrarDialog = true"
-            class="btn gap-2"
-            title="Criar nova nota"
-          >
+        <div class="btn-actions">
+          <button @click="mostrarDialog = true" class="btn-new-note" title="Criar nova nota">
             <RiMenuAddFill class="w-5 h-5" />
             <span>Nova Nota</span>
           </button>
-
-          <div class="dropdown dropdown-end">
-            <button tabindex="0" class="btn btn-ghost" title="Mais opções">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-              </svg>
-            </button>
-            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-              <li>
-                <button @click="gerarPDF" class="flex gap-2">
-                  <RiFilePdfFill class="w-5 h-5" />
-                  Exportar PDF
-                </button>
-              </li>
-              <li>
-                <button @click="apagarTodasNotas" class="flex gap-2 text-error">
-                  <RiDeleteBin6Fill class="w-5 h-5" />
-                  Limpar Tudo
-                </button>
-              </li>
-            </ul>
-          </div>
-
-
-          <!-- User Avatar -->
-          <div class="dropdown dropdown-end">
-            <button tabindex="0" class="avatar placeholder" title="Perfil">
-              <div class="w-10 rounded-full bg-neutral text-neutral-content">
-                  <img :src="perfil" alt="Perfil">
-              </div>
-            </button>
-            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-              <li><a>Meu Perfil</a></li>
-              <li><a>Configurações</a></li>
-              <li><a class="text-error">Sair</a></li>
-            </ul>
+          <button @click="apagarTodasNotas" class="btn-delet text-error">
+            <RiDeleteBin6Fill class="w-5 h-5" />
+            Limpar Tudo
+          </button>
+          <!-- Actions -->
+          <div class="Actions">
+            <div class="dropdown dropdown-top">
+              <button tabindex="0" class=" btn-ghost" title="Mais opções">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                </svg>
+              </button>
+              <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                <li>
+                  <button @click="gerarPDF" class="flex gap-2">
+                    <RiFilePdfFill class="w-5 h-5" />
+                    Exportar PDF
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
     </header>
 
-
-
     <!-- Main Content -->
     <main class="flex flex-1 flex-col lg:flex-row overflow-hidden">
-      <!-- Sidebar -->
-      <aside
-        class="sidebar bg-base-100 shadow-inner lg:w-80 xl:w-96 transition-all duration-300 ease-in-out"
-        :class="{
-          'hidden lg:block': !showNotesList,
-          'absolute lg:relative z-40 w-full h-full lg:h-auto': showNotesList
-        }"
-      >
-        <div class="h-full flex flex-col">
-          <!-- Mobile Notes Toggle -->
-          <div class="lg:hidden p-4 border-b flex justify-between items-center bg-base-100">
-            <h2 class="font-semibold text-lg">Minhas Notas</h2>
-            <button @click="toggleNotesList" class="btn btn-ghost btn-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      <!-- Editor Area -->
+      <section class="editor-area flex-1 overflow-auto">
+        <div class="h-full p-4 lg:p-6">
+          <NoteEditor v-if="notaAtual" :note="notaAtual" @update:title="(title) => atualizarConteudoNota({ title })"
+            @update:content="(content) => atualizarConteudoNota({ content })" class="h-full" />
+          <div v-else class="flex items-center justify-center h-full text-center">
+            <div class="max-w-md">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 mx-auto mb-6 text-base-content/20" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
               </svg>
-            </button>
+              <h3 class="text-2xl font-semibold mb-4 text-base-content/70">Nenhuma nota selecionada</h3>
+              <p class="text-base-content/50 mb-6">Selecione uma nota existente ou crie uma nova para começar a editar
+              </p>
+              <button @click="mostrarDialog = true" class="btn btn-primary gap-2">
+                <RiMenuAddFill class="w-5 h-5" />
+                Criar Nova Nota
+              </button>
+            </div>
           </div>
-
-
+        </div>
+      </section>
+      <!-- Sidebar -->
+      <aside class="sidebar" :class="{
+        'hidden lg:block': !showNotesList,
+        'absolute lg:relative z-40 w-full h-full lg:h-auto': showNotesList
+      }">
+        <div class="h-full flex flex-col">
           <!-- Notes List -->
           <div class="flex-1 overflow-y-auto">
             <div class="p-4">
               <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                   <h2 class="font-semibold text-lg">Minhas Notas</h2>
                 </div>
@@ -178,10 +105,7 @@
               </div>
 
               <div class="notes-list space-y-2">
-                <div
-                  v-for="(nota, indice) in notasFiltradas"
-                  :key="nota.id"
-                  @click="selecionarNota(indice)"
+                <div v-for="(nota, indice) in notasFiltradas" :key="nota.id" @click="selecionarNota(indice)"
                   class="note-item card bg-base-100 shadow-sm hover:shadow-md transition-all cursor-pointer group"
                   :class="{
                     'ring-2 ring-primary': indiceNotaAtual === getOriginalIndex(indice),
@@ -189,8 +113,7 @@
                     'border-l-success': nota.priority === 'Baixa',
                     'border-l-warning': nota.priority === 'Media',
                     'border-l-error': nota.priority === 'Alta'
-                  }"
-                >
+                  }">
                   <div class="card-body p-4">
                     <div class="flex justify-between items-start gap-2">
                       <div class="flex-1 min-w-0">
@@ -207,11 +130,9 @@
                           </div>
                         </div>
                       </div>
-                      <button
-                        @click.stop="apagarNota(indice)"
+                      <button @click.stop="apagarNota(indice)"
                         class="btn btn-ghost btn-xs opacity-0 group-hover:opacity-100 text-error hover:bg-error hover:text-error-content transition-opacity"
-                        aria-label="Delete note"
-                      >
+                        aria-label="Delete note">
                         <RiXrpFill class="w-3 h-3" />
                       </button>
                     </div>
@@ -219,8 +140,10 @@
                 </div>
 
                 <div v-if="notasFiltradas.length === 0" class="text-center py-8 text-base-content/50">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 opacity-50" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                   <p class="text-lg font-medium mb-2">Nenhuma nota encontrada</p>
                   <p class="text-sm mb-4">Crie sua primeira nota para começar</p>
@@ -234,35 +157,9 @@
           </div>
         </div>
       </aside>
-
-      <!-- Editor Area -->
-      <section class="editor-area flex-1 bg-base-200 overflow-auto">
-        <div class="h-full p-4 lg:p-6">
-          <NoteEditor
-            v-if="notaAtual"
-            :note="notaAtual"
-            @update:title="(title) => atualizarConteudoNota({ title })"
-            @update:content="(content) => atualizarConteudoNota({ content })"
-            class="h-full"
-          />
-          <div v-else class="flex items-center justify-center h-full text-center">
-            <div class="max-w-md">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 mx-auto mb-6 text-base-content/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-              </svg>
-              <h3 class="text-2xl font-semibold mb-4 text-base-content/70">Nenhuma nota selecionada</h3>
-              <p class="text-base-content/50 mb-6">Selecione uma nota existente ou crie uma nova para começar a editar</p>
-              <button @click="mostrarDialog = true" class="btn btn-primary gap-2">
-                <RiMenuAddFill class="w-5 h-5" />
-                Criar Nova Nota
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
     </main>
 
-    <!-- New Note Modal -->
+    <!-- Note Modal -->
     <dialog v-if="mostrarDialog" class="modal modal-open" @click.self="cancelarNovaNota">
       <div class="modal-box max-w-2xl p-0 overflow-hidden">
         <div class="content p-6 text-primary-content">
@@ -276,14 +173,8 @@
               <label class="label">
                 <span class="label-text font-medium">Título *</span>
               </label>
-              <input
-                v-model.trim="novaNota.name"
-                placeholder="Dê um título para sua nota"
-                class="input input-bordered w-full focus:input-primary"
-                required
-                maxlength="50"
-                aria-required="true"
-              >
+              <input v-model.trim="novaNota.name" placeholder="Dê um título para sua nota"
+                class="input input-bordered w-full focus:input-primary" required maxlength="50" aria-required="true">
               <label class="label">
                 <span class="label-text-alt">{{ novaNota.name.length }}/50 caracteres</span>
               </label>
@@ -293,12 +184,8 @@
               <label class="label">
                 <span class="label-text font-medium">Subtítulo</span>
               </label>
-              <input
-                v-model.trim="novaNota.subtitle"
-                placeholder="Adicione um subtítulo (opcional)"
-                class="input input-bordered w-full focus:input-primary"
-                maxlength="100"
-              >
+              <input v-model.trim="novaNota.subtitle" placeholder="Adicione um subtítulo (opcional)"
+                class="input input-bordered w-full focus:input-primary" maxlength="100">
             </div>
 
             <div class="form-control">
@@ -316,11 +203,8 @@
               <label class="label">
                 <span class="label-text font-medium">Conteúdo</span>
               </label>
-              <textarea
-                v-model.trim="novaNota.content"
-                placeholder="Escreva o conteúdo da sua nota..."
-                class="textarea textarea-bordered w-full h-32 focus:textarea-primary"
-              ></textarea>
+              <textarea v-model.trim="novaNota.content" placeholder="Escreva o conteúdo da sua nota..."
+                class="textarea textarea-bordered w-full h-32 focus:textarea-primary"></textarea>
             </div>
           </div>
 
@@ -328,13 +212,11 @@
             <button type="button" @click="cancelarNovaNota" class="btn btn-ghost">
               Cancelar
             </button>
-            <button
-              type="submit"
-              class="btn btn-primary gap-2"
-              :disabled="!novaNota.name"
-            >
+            <button type="submit" class="btn btn-primary gap-2" :disabled="!novaNota.name">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
               </svg>
               Salvar Nota
             </button>
@@ -343,10 +225,6 @@
       </div>
     </dialog>
   </div>
-     <button @click="handleNewNoteClick" class="bunttao flex-1 gap-2">
-                    <RiMenuAddFill class="w-5 h-5" />
-                    Nova Nota
-                  </button>
 </template>
 
 <script>
@@ -598,57 +476,244 @@ export default {
 }
 </script>
 
-<style>
-.resize-handle {
-  width: 5px;
-  height: 100%;
-  position: absolute;
-  right: 0;
-  top: 0;
-  cursor: col-resize;
-  background-color: rgba(0, 0, 0, 0.1);
-  transition: background-color 0.2s;
+<style scoped>
+
+* {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  scrollbar-width: thin;
+  scrollbar-color: oklch(var(--bc) / 0.2) transparent;
 }
 
-.resize-handle:hover {
-  background-color: rgba(0, 0, 0, 0.3);
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #000000;
+  background-image: url("https://www.transparenttextures.com/patterns/type.png");
+}
+
+.desktop-header {
+  display: flex;
+  position: fixed;
+  width: 100%;
+  max-width: 100%;
+  padding: 0.5rem;
+  bottom: 0px;
+  z-index: 50;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #27232300;
+  backdrop-filter: blur(5px);
+}
+
+.navbar {
+  display: flex;
+  align-content: center;
+  justify-content: space-evenly;
+}
+
+.btn-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .btn-delet {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 170px;
+    padding: 12px;
+    background-color: #222;
+    gap: 12px;
+    border: none;
+    border-radius: 20px;
+    margin: 5px;
+  }
+  .btn-new-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 170px;
+    padding: 12px;
+    background-color: #007aff;
+    gap: 12px;
+    border: none;
+    border-radius: 20px;
+    margin: 5px;
+  }
+}
+
+.input-search {
+    width: 150%;
+    padding: 1rem 3rem;
+    outline: none;
+    border-radius: 0.5rem;
+    background-color: #444;
+    color: oklch(var(--bc) / 0.8);
+    transition: all 0.2s ease;
 }
 
 .sidebar {
-  position: relative;
-  min-width: 250px;
-  max-width: 500px;
-  resize: horizontal;
-  overflow: auto;
-}
-
-/* Hide the default resize handle */
-.sidebar::-webkit-resizer {
-  display: none;
-}
-
-.sidebar {
-  position: relative;
-  height: 100vh;
+  display: flex;
+  float: right;
+  width: auto;
+  background-size: cover;
+  border-left: 1px solid #444444;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #27232300;
+  backdrop-filter: blur(5px);
+    max-height: 95vh;
   overflow-y: auto;
-  width: 300px; /* Default width */
 }
 
-/* Responsive adjustments */
+.notes-list {
+  scrollbar-width: thin;
+  scrollbar-color: oklch(var(--bc) / 0.2) transparent;
+
+  .notes-list::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .notes-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .notes-list::-webkit-scrollbar-thumb {
+    background: oklch(var(--bc) / 0.2);
+    border-radius: 3px;
+  }
+}
+
+.note-item {
+  transition: all 0.2s ease;
+  padding: 5px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #0f0f0f;
+  margin-bottom: 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.note-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+.main-content {
+  min-height: calc(100vh - 80px);
+}
+
+.editor-area {
+  background: transparent;
+}
+
+
+.search-container input,
+.search-container-mobile input {
+  transition: all 0.2s ease;
+}
+
+.search-container input:focus,
+.search-container-mobile input:focus {
+  transform: scale(1.02);
+}
+
+.modal-box {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* isso e o header do modal */
+.content {
+  background-image: url("https://www.transparenttextures.com/patterns/inspiration-geometry.png");
+}
+
 @media (max-width: 1023px) {
-  .sidebar {
-    height: auto;
+  .notes-container {
     max-height: 50vh;
-    width: 100% !important;
-    resize: none;
+    overflow-y: auto;
   }
 
   .editor-area {
     min-height: 50vh;
   }
+}
 
-  .resize-handle {
-    display: none;
+@media (max-width: 960px) {
+ .sidebar{
+  position: relative;
+  top: -50px;
+  display: flex;
+  flex-direction: row !important;
+  width: 100%;
+  height: 300px;
+ }
+
+ .note-item {
+  transition: all 0.2s ease;
+  padding: 5px;
+  width: 900px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #0f0f0f;
+  margin-bottom: 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+}
+
+/* Animações suaves */
+.modal {
+  animation: fadeIn 0.2s ease;
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
   }
 }
+
+.mobile-menu {
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Melhorias de acessibilidade */
+.btn:focus,
+.input:focus,
+.textarea:focus,
+.select:focus {
+  outline: 2px solid oklch(var(--p));
+  outline-offset: 2px;
+}
+
+/* Indicadores visuais melhorados */
+.badge {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+}
+
 </style>
