@@ -60,29 +60,6 @@
 
     <!-- Main Content -->
     <main class="flex flex-1 flex-col lg:flex-row overflow-hidden">
-      <!-- Editor Area -->
-      <section class="editor-area flex-1 overflow-auto">
-        <div class="h-full p-4 lg:p-6">
-          <NoteEditor v-if="notaAtual" :note="notaAtual" @update:title="(title) => atualizarConteudoNota({ title })"
-            @update:content="(content) => atualizarConteudoNota({ content })" class="h-full" />
-          <div v-else class="flex items-center justify-center h-full text-center">
-            <div class="max-w-md">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 mx-auto mb-6 text-base-content/20" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-              </svg>
-              <h3 class="text-2xl font-semibold mb-4 text-base-content/70">Nenhuma nota selecionada</h3>
-              <p class="text-base-content/50 mb-6">Selecione uma nota existente ou crie uma nova para começar a editar
-              </p>
-              <button @click="mostrarDialog = true" class="btn btn-primary gap-2">
-                <RiMenuAddFill class="w-5 h-5" />
-                Criar Nova Nota
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
       <!-- Sidebar -->
       <aside class="sidebar" :class="{
         'hidden lg:block': !showNotesList,
@@ -106,8 +83,7 @@
 
               <div class="notes-list space-y-2">
                 <div v-for="(nota, indice) in notasFiltradas" :key="nota.id" @click="selecionarNota(indice)"
-                  class="note-item card bg-base-100 shadow-sm hover:shadow-md transition-all cursor-pointer group"
-                  :class="{
+                  class="note-item card  transition-all cursor-pointer group glass-effect " :class="{
                     'ring-2 ring-primary': indiceNotaAtual === getOriginalIndex(indice),
                     'border-l-4': true,
                     'border-l-success': nota.priority === 'Baixa',
@@ -157,6 +133,29 @@
           </div>
         </div>
       </aside>
+      <!-- Editor Area -->
+      <section class="editor-area flex-1 overflow-auto">
+        <div class="h-full p-4 lg:p-6">
+          <NoteEditor v-if="notaAtual" :note="notaAtual" @update:title="(title) => atualizarConteudoNota({ title })"
+            @update:content="(content) => atualizarConteudoNota({ content })" class="h-full" />
+          <div v-else class="flex items-center justify-center h-full text-center">
+            <div class="max-w-md">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 mx-auto mb-6 text-base-content/20" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              <h3 class="text-2xl font-semibold mb-4 text-base-content/70">Nenhuma nota selecionada</h3>
+              <p class="text-base-content/50 mb-6">Selecione uma nota existente ou crie uma nova para começar a editar
+              </p>
+              <button @click="mostrarDialog = true" class="btn btn-primary gap-2">
+                <RiMenuAddFill class="w-5 h-5" />
+                Criar Nova Nota
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <!-- Note Modal -->
@@ -477,7 +476,6 @@ export default {
 </script>
 
 <style scoped>
-
 * {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
   scrollbar-width: thin;
@@ -488,8 +486,14 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #000000;
-  background-image: url("https://www.transparenttextures.com/patterns/type.png");
+  background: linear-gradient(135deg, #222222 0%, #1c1c1e 100%);
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .desktop-header {
@@ -500,9 +504,11 @@ export default {
   padding: 0.5rem;
   bottom: 0px;
   z-index: 50;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: #27232300;
-  backdrop-filter: blur(5px);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .navbar {
@@ -528,6 +534,7 @@ export default {
     border-radius: 20px;
     margin: 5px;
   }
+
   .btn-new-note {
     display: flex;
     align-items: center;
@@ -543,25 +550,24 @@ export default {
 }
 
 .input-search {
-    width: 150%;
-    padding: 1rem 3rem;
-    outline: none;
-    border-radius: 0.5rem;
-    background-color: #444;
-    color: oklch(var(--bc) / 0.8);
-    transition: all 0.2s ease;
+  width: 150%;
+  padding: 1rem 3rem;
+  outline: none;
+  border-radius: 0.5rem;
+  background-color: #444;
+  color: oklch(var(--bc) / 0.8);
+  transition: all 0.2s ease;
 }
 
 .sidebar {
   display: flex;
-  float: right;
   width: auto;
   background-size: cover;
-  border-left: 1px solid #444444;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: #27232300;
-  backdrop-filter: blur(5px);
-    max-height: 95vh;
+  border-right: 1px solid #444444;
+  background: rgba(121, 121, 121, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  max-height: 95vh;
   overflow-y: auto;
 }
 
@@ -584,16 +590,12 @@ export default {
 }
 
 .note-item {
-  transition: all 0.2s ease;
-  padding: 5px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: #0f0f0f;
-  margin-bottom: 12px;
-  cursor: pointer;
+  border: solid 1px #007aff;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
 }
 
 .note-item:hover {
@@ -643,28 +645,24 @@ export default {
 }
 
 @media (max-width: 960px) {
- .sidebar{
-  position: relative;
-  top: -50px;
-  display: flex;
-  flex-direction: row !important;
-  width: 100%;
-  height: 300px;
- }
+  .sidebar {
+    position: relative;
+    top: -50px;
+    display: flex;
+    flex-direction: row !important;
+    width: 100%;
+    height: 300px;
+  }
 
- .note-item {
-  transition: all 0.2s ease;
-  padding: 5px;
-  width: 900px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: #0f0f0f;
-  margin-bottom: 12px;
-  cursor: pointer;
+  .note-item {
+  border: solid 1px #007aff;
+  border-radius: 16px;
+  padding: 16px;
+  width: 800px;
+  margin-bottom: 16px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+  align-items: center;
+  }
 }
 
 /* Animações suaves */
@@ -715,5 +713,4 @@ export default {
   font-size: 0.7rem;
   letter-spacing: 0.5px;
 }
-
 </style>

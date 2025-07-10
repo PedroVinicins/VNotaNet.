@@ -62,7 +62,10 @@ export default {
   border-radius: 0.5rem;
   outline: none;
   width: 100%;
-    background: #222;
+   background: rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
   transition: border 0.2s ease, box-shadow 0.2s ease;
   color: rgb(255, 255, 255);
 }

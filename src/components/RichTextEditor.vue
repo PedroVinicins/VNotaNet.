@@ -137,7 +137,6 @@ export default {
 
 <style scoped>
 .rich-text-editor {
-  --editor-bg: #222;
   --editor-text: #fff;
   --toolbar-bg: #000000;
   --toolbar-text: #ffffff;
@@ -149,7 +148,7 @@ export default {
   --btn-active: rgba(0, 122, 255, 0.12);
 
   border-radius: var(--border-radius);
-  background: var(--editor-bg);
+  background: linear-gradient(135deg, #222222 0%, #1c1c1e 100%);
   border: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
   overflow: hidden;
@@ -164,7 +163,7 @@ export default {
   padding: 20px;
   font-size: var(--font-size);
   color: var(--editor-text);
-  background: var(--editor-bg);
+   background: linear-gradient(135deg, #222222 0%, #1c1c1e 100%);
   border-radius: 0 0 var(--border-radius) var(--border-radius);
   line-height: 1.6;
   outline: none;
@@ -172,13 +171,14 @@ export default {
 
 /* Toolbar */
 .toolbar {
-  background: var(--toolbar-bg) !important;
-  border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+  background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px) !important;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
   padding: 12px 16px !important;
   display: flex;
   flex-wrap: wrap;
   gap: var(--toolbar-gap);
-  border-bottom: 1px solid #e0e0e5 !important;
 }
 
 .ql-formats {
