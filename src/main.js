@@ -10,13 +10,6 @@ function isMobileDevice() {
   return window.innerWidth <= 768
 }
 
-if (isMobileDevice()) {
-      console.log('✅ mobile carregado!')
-}else{
-    console.error('❌ Erro ao carregar  mobile')
-}
-
-// Verifica mudança de tamanho da tela >>>
 let currentDevice = isMobileDevice()
 
 window.addEventListener('resize', () => {
@@ -30,12 +23,6 @@ function isDesckDevice() {
   return window.innerWidth <= 3840
 }
 
-// Aplica CSS mobile se for necessário
-if (isDesckDevice()) {
-      console.log('✅ CSS mobile carregado!')
-}else{
-      console.error('❌ Erro ao carregar CSS mobile:', err)
-}
 
 // Verifica mudança de tamanho da tela >>>
 let carregarDevice = isDesckDevice()

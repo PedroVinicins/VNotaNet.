@@ -12,11 +12,11 @@
           </div>
         </div>
 
-        <div class="search">
-          <div class="relative">
-            <input v-model="busca" @input="pesquisarNotas" placeholder="Pesquisar notas..." class="input-search"
+        <div class="search-container">
+          <div class="search-input-wrapper">
+            <input v-model="busca" @input="pesquisarNotas" placeholder="Pesquisar notas..." class="search-input"
               aria-label="Search notes" />
-            <span class="absolute left-3 top-1/2 transform -translate-y-1/2">
+            <span class="search-icon">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -26,7 +26,7 @@
           </div>
         </div>
         <div class="btn-actions">
-          <button @click="mostrarDialog = true" class="btn-new-note" title="Criar nova nota">
+          <button @click="modalOverlay = true" class="btn-new-note" title="Criar nova nota">
             <RiMenuAddFill class="w-5 h-5" />
             <span>Nova Nota</span>
           </button>
@@ -69,22 +69,17 @@
           <!-- Notes List -->
           <div class="flex-1 overflow-y-auto">
             <div class="p-4">
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
+              <div class="flex items-center justify-between mb-4 p-1 glass-effect">
+                <div class="flex items-center gap-3">
                   <h2 class="font-semibold text-lg">Minhas Notas</h2>
                 </div>
-                <div class="badge badge-primary">{{ notasFiltradas.length }}</div>
+                <div class="element-icon">{{ notasFiltradas.length }}</div>
               </div>
 
               <div class="notes-list space-y-2">
                 <div v-for="(nota, indice) in notasFiltradas" :key="nota.id" @click="selecionarNota(indice)"
-                  class="note-item card  transition-all cursor-pointer group glass-effect " :class="{
-                    'ring-2 ring-primary': indiceNotaAtual === getOriginalIndex(indice),
+                  class="note-item transition-all cursor-pointer group glass-effect " :class="{
+                    'ring-1': indiceNotaAtual === getOriginalIndex(indice),
                     'border-l-4': true,
                     'border-l-success': nota.priority === 'Baixa',
                     'border-l-warning': nota.priority === 'Media',
@@ -123,7 +118,7 @@
                   </svg>
                   <p class="text-lg font-medium mb-2">Nenhuma nota encontrada</p>
                   <p class="text-sm mb-4">Crie sua primeira nota para começar</p>
-                  <button @click="mostrarDialog = true" class="btn btn-primary gap-2">
+                  <button @click="modalOverlay = true" class="btn btn-primary gap-2">
                     <RiMenuAddFill class="w-5 h-5" />
                     Criar Nota
                   </button>
@@ -148,7 +143,7 @@
               <h3 class="text-2xl font-semibold mb-4 text-base-content/70">Nenhuma nota selecionada</h3>
               <p class="text-base-content/50 mb-6">Selecione uma nota existente ou crie uma nova para começar a editar
               </p>
-              <button @click="mostrarDialog = true" class="btn btn-primary gap-2">
+              <button @click="modalOverlay = true" class="btn btn-primary gap-2">
                 <RiMenuAddFill class="w-5 h-5" />
                 Criar Nova Nota
               </button>
@@ -159,70 +154,57 @@
     </main>
 
     <!-- Note Modal -->
-    <dialog v-if="mostrarDialog" class="modal modal-open" @click.self="cancelarNovaNota">
-      <div class="modal-box max-w-2xl p-0 overflow-hidden">
-        <div class="content p-6 text-primary-content">
-          <h3 class="font-bold text-2xl">Nova Nota</h3>
+    <div v-if="modalOverlay" class="modal-overlay" id="modalOverlay">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3>Nova Nota</h3>
           <p>Preencha os campos para criar sua nota</p>
         </div>
 
-        <form @submit.prevent="salvarNovaNota" class="p-6">
-          <div class="space-y-4">
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text font-medium">Título *</span>
-              </label>
-              <input v-model.trim="novaNota.name" placeholder="Dê um título para sua nota"
-                class="input input-bordered w-full focus:input-primary" required maxlength="50" aria-required="true">
-              <label class="label">
-                <span class="label-text-alt">{{ novaNota.name.length }}/50 caracteres</span>
-              </label>
-            </div>
-
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text font-medium">Subtítulo</span>
-              </label>
-              <input v-model.trim="novaNota.subtitle" placeholder="Adicione um subtítulo (opcional)"
-                class="input input-bordered w-full focus:input-primary" maxlength="100">
-            </div>
-
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text font-medium">Prioridade</span>
-              </label>
-              <select v-model="novaNota.priority" class="select select-bordered w-full focus:select-primary">
-                <option value="Baixa" class="text-success">🟢 Baixa</option>
-                <option value="Media" class="text-warning">🟡 Média</option>
-                <option value="Alta" class="text-error">🔴 Alta</option>
-              </select>
-            </div>
-
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text font-medium">Conteúdo</span>
-              </label>
-              <textarea v-model.trim="novaNota.content" placeholder="Escreva o conteúdo da sua nota..."
-                class="textarea textarea-bordered w-full h-32 focus:textarea-primary"></textarea>
+        <form @submit.prevent="salvarNovaNota" class="modal-form">
+          <div class="form-group">
+            <label for="modalNoteTitle">Título *</label>
+            <input v-model="novaNota.name" type="text" id="modalNoteTitle" placeholder="Dê um título para sua nota"
+              maxlength="50" required>
+            <div class="char-counter">
+              <span>{{ novaNota.name.length }}</span>/50 caracteres
             </div>
           </div>
 
-          <div class="modal-action mt-6">
-            <button type="button" @click="cancelarNovaNota" class="btn btn-ghost">
-              Cancelar
-            </button>
-            <button type="submit" class="btn btn-primary gap-2" :disabled="!novaNota.name">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clip-rule="evenodd" />
+          <div class="form-group">
+            <label for="modalNoteSubtitle">Subtítulo</label>
+            <input v-model="novaNota.subtitle" type="text" id="modalNoteSubtitle"
+              placeholder="Adicione um subtítulo (opcional)" maxlength="100">
+          </div>
+
+          <div class="form-group">
+            <label for="modalNotePriority">Prioridade</label>
+            <select v-model="novaNota.priority" id="modalNotePriority">
+              <option value="Baixa">🟢 Baixa</option>
+              <option value="Media" selected>🟡 Média</option>
+              <option value="Alta">🔴 Alta</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="modalNoteContent">Conteúdo</label>
+            <textarea v-model="novaNota.content" id="modalNoteContent" placeholder="Escreva o conteúdo da sua nota..."
+              rows="4"></textarea>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn secondary" @click="modalOverlay = false">Cancelar</button>
+            <button type="submit" class="btn primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="20,6 9,17 4,12"></polyline>
               </svg>
               Salvar Nota
             </button>
           </div>
         </form>
       </div>
-    </dialog>
+    </div>
+
   </div>
 </template>
 
@@ -247,7 +229,7 @@ export default {
       indiceNotaAtual: 0,
       busca: '',
       notasFiltradas: [],
-      mostrarDialog: false,
+      modalOverlay: false,
       showMobileMenu: false,
       showNotesList: false,
       isResizing: false,
@@ -278,6 +260,7 @@ export default {
     this.cleanupSidebarResize()
   },
   methods: {
+    // Métodos existentes de redimensionamento...
     setupMaincontentResize() {
       const sidebarElement = document.querySelector('.sidebar')
       const resizeHandle = document.createElement('div')
@@ -314,6 +297,8 @@ export default {
       document.removeEventListener('mousemove', this.handleResizeMove)
       document.removeEventListener('mouseup', this.stopResize)
     },
+
+    // Métodos de gerenciamento de notas com notificações integradas
     carregarNotas() {
       try {
         const notasSalvas = localStorage.getItem('notasData')
@@ -332,6 +317,234 @@ export default {
         this.criarNotaPadrao()
       }
     },
+
+    salvarNovaNota() {
+      if (!this.novaNota.name.trim()) {
+        this.showNotification('Por favor, insira um título para a nota', 'error')
+        return
+      }
+
+      try {
+        const notaCompleta = {
+          id: this.gerarIdUnico(),
+          name: this.novaNota.name.trim(),
+          subtitle: this.novaNota.subtitle.trim(),
+          content: this.novaNota.content.trim(),
+          priority: this.novaNota.priority,
+          date: new Date().toISOString()
+        }
+
+        this.notas.unshift(notaCompleta)
+        this.indiceNotaAtual = 0
+        this.salvarNotas()
+        this.pesquisarNotas()
+        this.modalOverlay = false
+        this.resetarNovaNota()
+
+        this.showNotification('Nota criada com sucesso!', 'success')
+
+        if (window.innerWidth < 1024) {
+          this.showNotesList = true
+        }
+      } catch (error) {
+        console.error('Erro ao salvar nota:', error)
+        this.showNotification('Erro ao criar nota', 'error')
+      }
+    },
+
+    apagarNota(indiceFiltrado) {
+      const originalIndex = this.getOriginalIndex(indiceFiltrado)
+      const nota = this.notas[originalIndex]
+
+      if (confirm(`Apagar a nota "${nota.name}"?`)) {
+        try {
+          this.notas.splice(originalIndex, 1)
+
+          if (this.indiceNotaAtual >= originalIndex) {
+            this.indiceNotaAtual = Math.max(0, this.indiceNotaAtual - 1)
+          }
+
+          if (this.notas.length === 0) {
+            this.criarNotaPadrao()
+          }
+
+          this.salvarNotas()
+          this.pesquisarNotas()
+          this.showNotification('Nota removida com sucesso', 'info')
+        } catch (error) {
+          console.error('Erro ao apagar nota:', error)
+          this.showNotification('Erro ao remover nota', 'error')
+        }
+      }
+    },
+
+    apagarTodasNotas() {
+      if (confirm("Tem certeza de que deseja apagar todas as notas?")) {
+        try {
+          this.notas = []
+          this.indiceNotaAtual = 0
+          this.salvarNotas()
+          this.pesquisarNotas()
+          this.criarNotaPadrao()
+          this.showNotification('Todas as notas foram removidas', 'info')
+        } catch (error) {
+          console.error('Erro ao apagar todas as notas:', error)
+          this.showNotification('Erro ao limpar notas', 'error')
+        }
+      }
+    },
+
+    atualizarConteudoNota({ title, content }) {
+      try {
+        if (this.notas[this.indiceNotaAtual]) {
+          if (title !== undefined) this.notas[this.indiceNotaAtual].name = title
+          if (content !== undefined) this.notas[this.indiceNotaAtual].content = content
+          this.salvarNotas()
+        }
+      } catch (error) {
+        console.error('Erro ao atualizar nota:', error)
+      }
+    },
+
+    // Método de notificação
+    showNotification(message, type = 'info') {
+      // Verifica se já existe um container de notificações
+      let container = document.getElementById('notification-container')
+      if (!container) {
+        container = document.createElement('div')
+        container.id = 'notification-container'
+        container.style.position = 'fixed'
+        container.style.bottom = '20px'
+        container.style.right = '20px'
+        container.style.zIndex = '10000'
+        container.style.display = 'flex'
+        container.style.flexDirection = 'column'
+        container.style.gap = '10px'
+        document.body.appendChild(container)
+      }
+
+      // Cria a notificação
+      const notification = document.createElement('div')
+      notification.className = `notification ${type}`
+
+      // Ícone baseado no tipo
+      let icon
+      switch (type) {
+        case 'success': icon = '✓'; break
+        case 'error': icon = '✕'; break
+        default: icon = 'ℹ'
+      }
+
+      notification.innerHTML = `
+        <div class="notification-content">
+          <span class="notification-icon">${icon}</span>
+          <span class="notification-message">${message}</span>
+          <button class="notification-close">×</button>
+        </div>
+      `
+
+      // Adiciona estilos se não existirem
+      if (!document.getElementById('notification-styles')) {
+        const style = document.createElement('style')
+        style.id = 'notification-styles'
+        style.textContent = `
+             /* Estilos para as notificações sem usar variáveis CSS */
+.notification {
+  position: fixed;
+top: 100px;
+                    right: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  animation: slideInRight 0.3s ease;
+  max-width: 300px;
+  transform: translateX(0);
+  opacity: 1;
+  transition: all 0.3s ease;
+  z-index: 10000;
+}
+
+.notification.success {
+  border-left: 4px solid #34C759;
+}
+
+.notification.error {
+  border-left: 4px solid #FF3B30;
+}
+
+.notification.info {
+  border-left: 4px solid #007AFF;
+}
+
+.notification.warning {
+  border-left: 4px solid #FF9500;
+}
+
+.notification-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.notification-icon {
+  font-size: 18px;
+  color: #FFFFFF;
+}
+
+.notification-message {
+  color: #FFFFFF;
+  font-size: 14px;
+  flex-grow: 1;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0;
+  margin-left: 8px;
+}
+
+.notification-close:hover {
+  color: #FFFFFF;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; transform: translateY(-10px); }
+}
+        `
+        document.head.appendChild(style)
+      }
+
+      container.appendChild(notification)
+
+      // Fecha ao clicar no botão
+      const closeBtn = notification.querySelector('.notification-close')
+      closeBtn.addEventListener('click', () => {
+        notification.style.animation = 'fadeOut 0.3s ease'
+        setTimeout(() => notification.remove(), 300)
+      })
+
+      // Remove automaticamente após 3 segundos
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.style.animation = 'fadeOut 0.3s ease'
+          setTimeout(() => notification.remove(), 300)
+        }
+      }, 3000)
+    },
+
+    // Outros métodos existentes...
     gerarIdUnico() {
       return Date.now().toString(36) + Math.random().toString(36).substring(2)
     },
@@ -346,7 +559,7 @@ export default {
       this.showNotesList = !this.showNotesList
     },
     handleNewNoteClick() {
-      this.mostrarDialog = true
+      this.modalOverlay = true
       this.showMobileMenu = false
     },
     criarNotaPadrao() {
@@ -370,28 +583,8 @@ export default {
         return dateString
       }
     },
-    salvarNovaNota() {
-      if (!this.novaNota.name.trim()) return
-      const notaCompleta = {
-        id: this.gerarIdUnico(),
-        name: this.novaNota.name.trim(),
-        subtitle: this.novaNota.subtitle.trim(),
-        content: this.novaNota.content.trim(),
-        priority: this.novaNota.priority,
-        date: new Date().toISOString()
-      }
-      this.notas.unshift(notaCompleta)
-      this.indiceNotaAtual = 0
-      this.salvarNotas()
-      this.pesquisarNotas()
-      this.mostrarDialog = false
-      this.resetarNovaNota()
-      if (window.innerWidth < 1024) {
-        this.showNotesList = true
-      }
-    },
     cancelarNovaNota() {
-      this.mostrarDialog = false
+      this.modalOverlay = false
       this.resetarNovaNota()
     },
     resetarNovaNota() {
@@ -400,30 +593,6 @@ export default {
         subtitle: '',
         priority: 'Media',
         content: ''
-      }
-    },
-    apagarTodasNotas() {
-      if (confirm("Tem certeza de que deseja apagar todas as notas?")) {
-        this.notas = []
-        this.indiceNotaAtual = 0
-        this.salvarNotas()
-        this.pesquisarNotas()
-        this.criarNotaPadrao()
-      }
-    },
-    apagarNota(indiceFiltrado) {
-      const originalIndex = this.getOriginalIndex(indiceFiltrado)
-      const nota = this.notas[originalIndex]
-      if (confirm(`Apagar a nota "${nota.name}"?`)) {
-        this.notas.splice(originalIndex, 1)
-        if (this.indiceNotaAtual >= originalIndex) {
-          this.indiceNotaAtual = Math.max(0, this.indiceNotaAtual - 1)
-        }
-        if (this.notas.length === 0) {
-          this.criarNotaPadrao()
-        }
-        this.salvarNotas()
-        this.pesquisarNotas()
       }
     },
     getOriginalIndex(indiceFiltrado) {
@@ -435,13 +604,6 @@ export default {
       this.indiceNotaAtual = this.getOriginalIndex(indiceFiltrado)
       if (window.innerWidth < 1024) {
         this.showNotesList = false
-      }
-    },
-    atualizarConteudoNota({ title, content }) {
-      if (this.notas[this.indiceNotaAtual]) {
-        if (title !== undefined) this.notas[this.indiceNotaAtual].name = title
-        if (content !== undefined) this.notas[this.indiceNotaAtual].content = content
-        this.salvarNotas()
       }
     },
     ordenarPorPrioridade(notas) {
@@ -474,243 +636,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-* {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-  scrollbar-width: thin;
-  scrollbar-color: oklch(var(--bc) / 0.2) transparent;
-}
-
-.app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #222222 0%, #1c1c1e 100%);
-}
-
-.glass-effect {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.desktop-header {
-  display: flex;
-  position: fixed;
-  width: 100%;
-  max-width: 100%;
-  padding: 0.5rem;
-  bottom: 0px;
-  z-index: 50;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.navbar {
-  display: flex;
-  align-content: center;
-  justify-content: space-evenly;
-}
-
-.btn-actions {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  .btn-delet {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 170px;
-    padding: 12px;
-    background-color: #222;
-    gap: 12px;
-    border: none;
-    border-radius: 20px;
-    margin: 5px;
-  }
-
-  .btn-new-note {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 170px;
-    padding: 12px;
-    background-color: #007aff;
-    gap: 12px;
-    border: none;
-    border-radius: 20px;
-    margin: 5px;
-  }
-}
-
-.input-search {
-  width: 150%;
-  padding: 1rem 3rem;
-  outline: none;
-  border-radius: 0.5rem;
-  background-color: #444;
-  color: oklch(var(--bc) / 0.8);
-  transition: all 0.2s ease;
-}
-
-.sidebar {
-  display: flex;
-  width: auto;
-  background-size: cover;
-  border-right: 1px solid #444444;
-  background: rgba(121, 121, 121, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  max-height: 95vh;
-  overflow-y: auto;
-}
-
-.notes-list {
-  scrollbar-width: thin;
-  scrollbar-color: oklch(var(--bc) / 0.2) transparent;
-
-  .notes-list::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .notes-list::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .notes-list::-webkit-scrollbar-thumb {
-    background: oklch(var(--bc) / 0.2);
-    border-radius: 3px;
-  }
-}
-
-.note-item {
-  border: solid 1px #007aff;
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-}
-
-.note-item:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-
-.main-content {
-  min-height: calc(100vh - 80px);
-}
-
-.editor-area {
-  background: transparent;
-}
-
-
-.search-container input,
-.search-container-mobile input {
-  transition: all 0.2s ease;
-}
-
-.search-container input:focus,
-.search-container-mobile input:focus {
-  transform: scale(1.02);
-}
-
-.modal-box {
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-/* isso e o header do modal */
-.content {
-  background-image: url("https://www.transparenttextures.com/patterns/inspiration-geometry.png");
-}
-
-@media (max-width: 1023px) {
-  .notes-container {
-    max-height: 50vh;
-    overflow-y: auto;
-  }
-
-  .editor-area {
-    min-height: 50vh;
-  }
-}
-
-@media (max-width: 960px) {
-  .sidebar {
-    position: relative;
-    top: -50px;
-    display: flex;
-    flex-direction: row !important;
-    width: 100%;
-    height: 300px;
-  }
-
-  .note-item {
-  border: solid 1px #007aff;
-  border-radius: 16px;
-  padding: 16px;
-  width: 800px;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  }
-}
-
-/* Animações suaves */
-.modal {
-  animation: fadeIn 0.2s ease;
-}
-
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-.mobile-menu {
-  animation: slideDown 0.2s ease;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Melhorias de acessibilidade */
-.btn:focus,
-.input:focus,
-.textarea:focus,
-.select:focus {
-  outline: 2px solid oklch(var(--p));
-  outline-offset: 2px;
-}
-
-/* Indicadores visuais melhorados */
-.badge {
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.7rem;
-  letter-spacing: 0.5px;
-}
-</style>
