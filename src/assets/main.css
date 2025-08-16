@@ -288,7 +288,7 @@
   border-radius: var(--radius-2xl);
   max-width: 500px;
   width: 90%;
-  max-height: 90vh;
+  max-height: auto;
   overflow: hidden;
   box-shadow: var(--shadow-xl);
   animation: slideUp 0.3s ease;
